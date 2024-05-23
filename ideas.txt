@@ -1,0 +1,36 @@
+HigherLower
+WarmerColder
+Dice
+Cards
+Spirograph
+Battleship
+Maze
+Mastermind
+wordle
+Blackbox
+TicTacToe
+WordScramble
+Hangman
+mpuz
+dots and lines
+bingo card generator
+Mad Libs
+Algebra Attack
+amortization table ?
+robots (move from robots, random teleport, they crash)
+slide rule
+napier bones
+abacus
+Peg Solitaire
+pieces of eight
+Morse Code (lty in plots, audio)
+math sticks generator
+function objectizer (run on function, then set arguments, update arguments and automatically rerun function, old args remain).
+Permutations and Combinations
+Turtle Graphics
+Progress Bars
+Life (Conway's game of)
+sudoku
+kenken
+
+
