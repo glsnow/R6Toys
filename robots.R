@@ -191,3 +191,37 @@ getGraphicsEvent(
   }
 )
 
+
+## test auto timing not working with onIdle ----
+
+lstm <- Sys.time() + 1000
+dev.new(width=6, height=3, noRStudioGD = TRUE)
+r <- Robots$new(30)
+
+tclAfter(10*1000, function() r$move('.'))
+getGraphicsEvent(
+  prompt='Ready',
+  onKeybd=function(A){
+    lstm <<- Sys.time()
+    switch(A,
+           "'"=r$move('nw'),
+           ","=r$move('n'),
+           "."=r$move('ne'),
+           a=r$move('w'),
+           o=r$move('.'),
+           e=r$move('e'),
+           ";"=r$move('sw'),
+           q=r$move('s'),
+           j=r$move('se'),
+           t=r$move('t'),
+           y=r$move('t'),
+           ' '=r$move('.'))
+  },
+  onIdle = function() {
+    if(as.numeric(difftime(Sys.time(), lstm, units='secs')) > 10) {
+      lstm <<- Sys.time()
+      r$move('.')
+    }
+  }
+)
+

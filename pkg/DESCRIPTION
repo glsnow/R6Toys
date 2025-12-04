@@ -1,0 +1,12 @@
+Package: R6Toys
+Version: 1.0
+Title: Examples, tools, and toys using R6 objects
+Version: 0.0.0.9000
+Authors@R: 
+    person("Greg", "Snow", , "538280@gmail.com", role = c("aut", "cre"))
+Maintainer: Greg Snow <538280@gmail.com>
+Description: Examples, tools, and toys to demonstrate and encourage use of R6 
+  objects.  Objects to use in practice of programming. Demonstrations of
+  using R6 objects.  And some fun examples using R6.
+License:  GPL (>= 2)
+Imports: R6

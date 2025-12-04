@@ -1,0 +1,4 @@
+importFrom("R6", "R6Class")
+export("R6Counter")
+export("R6ProgressBar")
+export("R6DLL")
