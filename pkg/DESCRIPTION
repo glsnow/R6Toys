@@ -1,7 +1,6 @@
 Package: R6Toys
 Version: 1.0
 Title: Examples, tools, and toys using R6 objects
-Version: 0.0.0.9000
 Authors@R: 
     person("Greg", "Snow", , "538280@gmail.com", role = c("aut", "cre"))
 Maintainer: Greg Snow <538280@gmail.com>

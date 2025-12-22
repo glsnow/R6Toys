@@ -211,7 +211,96 @@ while(!pb3$finished) {
 rm(pb3)
 gc()
 
+pb4 <- R6ProgressBar$new(100, type='tk')
+
+out <- replicate(100, {pb4$pp; Sys.sleep(0.1)})
+out <- replicate(100, {pb4$mm; Sys.sleep(0.1)})
+
+rm(pb4)
+gc()
 
 
+## Robots ----
+
+r <- Robots$new()
+r$plot()
+r$print()
+
+## interactive graphics ----
+
+dev.new()
+r <- Robots$new(30)
+getGraphicsEvent(
+  prompt='Ready',
+  onKeybd=function(A){
+    switch(A,
+           q=r$move('nw'),
+           w=r$move('n'),
+           e=r$move('ne'),
+           a=r$move('w'),
+           s=r$move('.'),
+           d=r$move('e'),
+           z=r$move('sw'),
+           x=r$move('s'),
+           c=r$move('se'),
+           t=r$move('t'),
+           ' '=r$move('.'))
+  }
+)
+
+dev.new(width=6, height=3, noRStudioGD = TRUE)
+r <- Robots$new(30)
+getGraphicsEvent(
+  prompt='Ready',
+  onKeybd=function(A){
+    switch(A,
+           "'"=r$move('nw'),
+           ","=r$move('n'),
+           "."=r$move('ne'),
+           a=r$move('w'),
+           o=r$move('.'),
+           e=r$move('e'),
+           ";"=r$move('sw'),
+           q=r$move('s'),
+           j=r$move('se'),
+           t=r$move('t'),
+           y=r$move('t'),
+           ' '=r$move('.'))
+  }
+)
+
+
+## test auto timing not working with onIdle ----
+
+lstm <- Sys.time() + 1000
+dev.new(width=6, height=3, noRStudioGD = TRUE)
+r <- Robots$new(30)
+
+tclAfter(10*1000, function() r$move('.'))
+getGraphicsEvent(
+  prompt='Ready',
+  onKeybd=function(A){
+    lstm <<- Sys.time()
+    switch(A,
+           "'"=r$move('nw'),
+           ","=r$move('n'),
+           "."=r$move('ne'),
+           a=r$move('w'),
+           o=r$move('.'),
+           e=r$move('e'),
+           ";"=r$move('sw'),
+           q=r$move('s'),
+           j=r$move('se'),
+           t=r$move('t'),
+           y=r$move('t'),
+           ' '=r$move('.'))
+  },
+  onIdle = function() {
+    if(as.numeric(difftime(Sys.time(), lstm, units='secs')) > 10) {
+      lstm <<- Sys.time()
+      r$move('.')
+    }
+  }
+)
 
 

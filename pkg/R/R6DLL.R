@@ -1,4 +1,4 @@
-library(R6)
+
 R6DLL <- R6Class("R6DLL", 
                  public = list(length=0, warn=FALSE,
                                found=FALSE),

@@ -8,7 +8,12 @@ Robots <- R6Class('Robots',
                     corpse=matrix(NA, ncol=2, nrow=1),
                     robots=matrix(ncol=2, nrow=0),
                     piles=matrix(ncol=2, nrow=0),
-                    initialize= function(nrobots=10) {
+                    initialize= function(nrobots=10, nrow=20, ncol=50,
+                                         auto.print=FALSE, auto.plot=TRUE) {
+                      self$nrow <- nrow
+                      self$ncol <- ncol
+                      self$auto.print <- auto.print
+                      self$auto.plot <- auto.plot
                       self$player[1,] <- c(round(self$ncol/2), round(self$nrow/2))
                       self$robots <- matrix(nrow=nrobots, ncol=2)
                       self$robots[,1] <- sample(self$ncol, nrobots, replace=TRUE)
@@ -144,84 +149,4 @@ Robots <- R6Class('Robots',
                     }
                   ))
 
-r <- Robots$new()
-r$plot()
-r$print()
-
-## interactive graphics ----
-
-dev.new()
-r <- Robots$new(30)
-getGraphicsEvent(
-  prompt='Ready',
-  onKeybd=function(A){
-    switch(A,
-           q=r$move('nw'),
-           w=r$move('n'),
-           e=r$move('ne'),
-           a=r$move('w'),
-           s=r$move('.'),
-           d=r$move('e'),
-           z=r$move('sw'),
-           x=r$move('s'),
-           c=r$move('se'),
-           t=r$move('t'),
-           ' '=r$move('.'))
-  }
-)
-
-dev.new(width=6, height=3, noRStudioGD = TRUE)
-r <- Robots$new(30)
-getGraphicsEvent(
-  prompt='Ready',
-  onKeybd=function(A){
-    switch(A,
-           "'"=r$move('nw'),
-           ","=r$move('n'),
-           "."=r$move('ne'),
-           a=r$move('w'),
-           o=r$move('.'),
-           e=r$move('e'),
-           ";"=r$move('sw'),
-           q=r$move('s'),
-           j=r$move('se'),
-           t=r$move('t'),
-           y=r$move('t'),
-           ' '=r$move('.'))
-  }
-)
-
-
-## test auto timing not working with onIdle ----
-
-lstm <- Sys.time() + 1000
-dev.new(width=6, height=3, noRStudioGD = TRUE)
-r <- Robots$new(30)
-
-tclAfter(10*1000, function() r$move('.'))
-getGraphicsEvent(
-  prompt='Ready',
-  onKeybd=function(A){
-    lstm <<- Sys.time()
-    switch(A,
-           "'"=r$move('nw'),
-           ","=r$move('n'),
-           "."=r$move('ne'),
-           a=r$move('w'),
-           o=r$move('.'),
-           e=r$move('e'),
-           ";"=r$move('sw'),
-           q=r$move('s'),
-           j=r$move('se'),
-           t=r$move('t'),
-           y=r$move('t'),
-           ' '=r$move('.'))
-  },
-  onIdle = function() {
-    if(as.numeric(difftime(Sys.time(), lstm, units='secs')) > 10) {
-      lstm <<- Sys.time()
-      r$move('.')
-    }
-  }
-)
 
