@@ -68,6 +68,30 @@ R6ProgressBar$set("public", "dec", function(x=1) {
            )
 })
 
+## set ----
+
+R6ProgressBar$set("public", "set", function(x=0) {
+  super$set(x)
+  switch(self$type,
+         txt= setTxtProgressBar(self$pb, self$value, 
+                                label=sprintf(self$label, self$value)),
+         tk = setTkProgressBar(self$pb, self$value, 
+                               label=sprintf(self$label, self$value)),
+         win= setWinProgressBar(self$pb, self$value, label=
+                                  sprintf(self$label, self$value))
+  )
+})
+
+## reset ----
+
+R6ProgressBar$set("active", "reset", function(x) {
+  if(missing(x)) {
+    x <- 0
+  }
+  self$set(x)
+})
+
+
 ## finished ----
 
 R6ProgressBar$set("active", "finished", function(...) {
