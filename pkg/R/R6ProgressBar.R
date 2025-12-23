@@ -12,12 +12,21 @@ R6ProgressBar <- R6Class("R6ProgressBar",
 
 R6ProgressBar$set("public", "initialize", function(max, min=0, 
                                                    initial=0,
-                                                   type=c("txt", "tk", "win"),
+                                                   type=c("auto", "txt", "tk", "win"),
                                                    style=3, label='%d',
                                                    ...
                                                    ) {
   self$value <- initial
   type <- match.arg(type)
+  if(type == 'auto') {
+    if(exists("winProgressBar", type='function')) {
+      type <- "win"
+    } else if(require(tcltk) && .TkUp) {
+      type <- "tk"
+    } else {
+      type <- "txt"
+    }
+  }
   if(type=='tk') require('tcltk')
   self$type <- type
   self$label <- label
