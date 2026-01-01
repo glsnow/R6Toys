@@ -1,5 +1,7 @@
 ## tests R6DLL ----
 
+source("pkg/R/R6DLL.R")
+
 dll <- R6DLL$new()
 dll$push(1)$push(2)$push("c")
 dll$pop()
@@ -14,6 +16,7 @@ dll$pop()
 dll$unshift(2)
 dll$unshift(1)
 
+dll$toList()
 
 dll$iter_reset()
 while(!dll$finished) {
@@ -79,6 +82,10 @@ for(i in seq_along(state.name)) {
   )
 }
 
+state.dll$toList()
+state.dll$toList(\(x){data.frame(State=x$abb, Pop=x$stats[1])}, 
+                 simplify=rbind) 
+
 state.dll$iter_all(function(x) cat(x$name, ": ", x$stats[['Population']], "\n"))
 
 state.dll$iter_reset()
@@ -113,6 +120,8 @@ pryr::mem_change( {
 })
 
 ## tests R6Counter ----
+
+source("pkg/R/R6Counter.R")
 
 y <- R6Counter$new(5)
 y$inc()
@@ -181,6 +190,8 @@ close(pb)
 
 ## tests R6ProgressBar ----
 
+source("pkg/R/R6ProgressBar.R")
+
 pb1 <- R6ProgressBar$new(100)
 
 while(!pb1$finished) {
@@ -216,8 +227,29 @@ pb4 <- R6ProgressBar$new(100, type='tk')
 out <- replicate(100, {pb4$pp; Sys.sleep(0.1)})
 out <- replicate(100, {pb4$mm; Sys.sleep(0.1)})
 
+pb4$set(50)
+pb4$reset
+
+pb4$reset <- 20
+
 rm(pb4)
 gc()
+
+
+pb5 <- R6ProgressBar$new(26, label=LETTERS)
+replicate(26, {pb5$pp; Sys.sleep(0.1); pb5$value})
+
+pb5$reset
+
+sapply(1:26, pb5$run(\(x){cat(letters[x], "\n"); Sys.sleep(0.1); x*10}))
+
+pb5$reset
+pb5$cycle <- TRUE
+replicate(100, {pb5$pp; Sys.sleep(0.1); pb5$value})
+
+rm(pb5)
+gc()
+
 
 
 ## Robots ----

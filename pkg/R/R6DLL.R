@@ -326,4 +326,32 @@ R6DLL$set("public", "swap", function(loc=c('after','before')) {
   }
 })
 
+## toList ----
 
+R6DLL$set("public", "toList", function(FUN=I, fromLast=FALSE,
+                                       simplify=TRUE) {
+  cn <- private$current
+  out <- vector("list", self$length)
+  tmp <- R6Counter$new()
+  if(fromLast) {
+    self$iter_reset(last=TRUE)
+    while(!self$finished) {
+      out[[tmp$pp]] <- FUN(private$current$value)
+      self$iter_prev()
+    }
+  } else {
+    self$iter_reset(last=FALSE)
+    while(!self$finished) {
+      out[[tmp$pp]] <- FUN(private$current$value)
+      self$iter_next()
+    }
+  }
+  private$current <- cn
+  if(is.function(simplify)) {
+    return(do.call(simplify, out))
+  } else if(simplify) {
+    return(simplify2array(out))
+  } else {
+    return(out)
+  }
+})
