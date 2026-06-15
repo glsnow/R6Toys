@@ -75,6 +75,12 @@ MPuz <- R6Class("MPuz",
                   },
                   finished = function() {
                     !grepl("[A-J]", self$current)
+                  },
+                  score = function() {
+                    correct <- sum(grepl("[0-9]", self$correct))
+                    incorrect <- sum(sapply(self$incorrect, length))
+                    cat("Score: ", correct, "correct, ", incorrect, "incorrect\n")
+                    return(invisible(c(correct = correct, incorrect = incorrect)))
                   }
                 ),
                 private=list(
