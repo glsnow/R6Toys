@@ -40,34 +40,47 @@ counter but do \emph{not} redraw the progress bar; use \code{$inc()},
 }
 
 \examples{
-# Basic usage: increment until finished
-pb <- R6ProgressBar$new(100)
-while (!pb$finished) {
-  pb$inc()
+if (interactive()) {
+  # Basic usage: increment until finished
+  pb <- R6ProgressBar$new(100)
+  while (!pb$finished) {
+    pb$inc()
   Sys.sleep(0.05)
-}
-pb$value   # 100
+  }
+  pb$value   # 100
 
 # Reset to 0 and reuse
-pb$reset
-pb$value   # 0
+  pb$reset
+  pb$value   # 0
 
 # Use run() to wrap a function so every call increments the bar
-pb2 <- R6ProgressBar$new(50)
-slow_fn <- pb2$run(function(x) x^2)
-results <- sapply(1:50, slow_fn)
+  pb2 <- R6ProgressBar$new(50)
+  slow_fn <- pb2$run(function(x) x^2)
+  results <- sapply(1:50, slow_fn)
 
 # Vector of custom labels
-steps <- c("Loading", "Cleaning", "Fitting", "Saving")
-pb3 <- R6ProgressBar$new(max = 4, label = steps)
-for (i in seq_along(steps)) {
-  pb3$inc()
-  Sys.sleep(0.3)
-}
+  steps <- c("Loading", "Cleaning", "Fitting", "Saving")
+  pb3 <- R6ProgressBar$new(max = 4, label = steps)
+  for (i in seq_along(steps)) {
+    pb3$inc()
+    Sys.sleep(0.3)
+  }
+
+# Cycling
+  pb4 <- R6ProgressBar$new(10, cycle = TRUE)
+  x <- 1000000
+  while(x > 1.0001) {
+    pb4$pp
+    Sys.sleep(0.3)
+    x <- sqrt(x)
+    print(x)
+  }
 
 # Clean up -- closes the progress bar window
-rm(pb, pb2, pb3)
-gc()
+  rm(pb, pb2, pb3, pb4)
+  gc()
+
+}
 
 
 ## ------------------------------------------------
@@ -182,7 +195,7 @@ constructor (e.g. \code{title} for \code{winProgressBar}).}
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-A new \code{R6ProgressBar} object (invisibly).
+A new \code{R6ProgressBar} object (invisibly) to allow chaining.
 }
 }
 \if{html}{\out{<hr>}}
@@ -202,7 +215,7 @@ Increment the progress bar position and redraw the bar.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-The \code{R6ProgressBar} object (invisibly).
+The \code{R6ProgressBar} object (invisibly) to allow chaining.
 }
 }
 \if{html}{\out{<hr>}}
@@ -222,7 +235,7 @@ Decrement the progress bar position and redraw the bar.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-The \code{R6ProgressBar} object (invisibly).
+The \code{R6ProgressBar} object (invisibly) to allow chaining.
 }
 }
 \if{html}{\out{<hr>}}
@@ -242,7 +255,7 @@ Set the progress bar position to an arbitrary value and redraw.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-The \code{R6ProgressBar} object (invisibly).
+The \code{R6ProgressBar} object (invisibly) to allow chaining.
 }
 }
 \if{html}{\out{<hr>}}
