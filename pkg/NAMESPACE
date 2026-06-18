@@ -2,3 +2,4 @@
 
 export(MPuz)
 export(R6Counter)
+importFrom(R6,R6Class)

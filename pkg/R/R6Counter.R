@@ -1,3 +1,6 @@
+#' @importFrom R6 R6Class
+NULL
+
 #' Counter Object
 #'
 #' @description
