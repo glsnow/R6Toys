@@ -38,35 +38,48 @@ NULL
 #' \code{$dec()}, or \code{$set()} for that.
 #'
 #' @examples
-#' # Basic usage: increment until finished
-#' pb <- R6ProgressBar$new(100)
-#' while (!pb$finished) {
-#'   pb$inc()
+#' if (interactive()) {
+#'   # Basic usage: increment until finished
+#'   pb <- R6ProgressBar$new(100)
+#'   while (!pb$finished) {
+#'     pb$inc()
 #'   Sys.sleep(0.05)
-#' }
-#' pb$value   # 100
+#'   }
+#'   pb$value   # 100
 #'
 #' # Reset to 0 and reuse
-#' pb$reset
-#' pb$value   # 0
+#'   pb$reset
+#'   pb$value   # 0
 #'
 #' # Use run() to wrap a function so every call increments the bar
-#' pb2 <- R6ProgressBar$new(50)
-#' slow_fn <- pb2$run(function(x) x^2)
-#' results <- sapply(1:50, slow_fn)
+#'   pb2 <- R6ProgressBar$new(50)
+#'   slow_fn <- pb2$run(function(x) x^2)
+#'   results <- sapply(1:50, slow_fn)
 #'
 #' # Vector of custom labels
-#' steps <- c("Loading", "Cleaning", "Fitting", "Saving")
-#' pb3 <- R6ProgressBar$new(max = 4, label = steps)
-#' for (i in seq_along(steps)) {
-#'   pb3$inc()
-#'   Sys.sleep(0.3)
-#' }
+#'   steps <- c("Loading", "Cleaning", "Fitting", "Saving")
+#'   pb3 <- R6ProgressBar$new(max = 4, label = steps)
+#'   for (i in seq_along(steps)) {
+#'     pb3$inc()
+#'     Sys.sleep(0.3)
+#'   }
 #'
+#' # Cycling
+#'   pb4 <- R6ProgressBar$new(10, cycle = TRUE)
+#'   x <- 1000000
+#'   while(x > 1.0001) {
+#'     pb4$pp
+#'     Sys.sleep(0.3)
+#'     x <- sqrt(x)
+#'     print(x)
+#'   }
+#' 
 #' # Clean up -- closes the progress bar window
-#' rm(pb, pb2, pb3)
-#' gc()
+#'   rm(pb, pb2, pb3, pb4)
+#'   gc()
 #'
+#' }
+#' 
 #' @export
 R6ProgressBar <- R6Class("R6ProgressBar",
   inherit = R6Counter,
@@ -116,7 +129,7 @@ R6ProgressBar <- R6Class("R6ProgressBar",
     #'   back to 1 after reaching \code{max}. Default \code{FALSE}.
     #' @param ... Additional arguments passed to the underlying progress bar
     #'   constructor (e.g. \code{title} for \code{winProgressBar}).
-    #' @return A new \code{R6ProgressBar} object (invisibly).
+    #' @return A new \code{R6ProgressBar} object (invisibly) to allow chaining.
     initialize = function(max, min = 0,
                           initial = 0,
                           type = c("auto", "txt", "tk", "win"),
@@ -158,7 +171,7 @@ R6ProgressBar <- R6Class("R6ProgressBar",
     #' @description
     #' Increment the progress bar position and redraw the bar.
     #' @param x Numeric. Amount to increment. Default \code{1}.
-    #' @return The \code{R6ProgressBar} object (invisibly).
+    #' @return The \code{R6ProgressBar} object (invisibly) to allow chaining.
     inc = function(x = 1) {
       super$inc(x)
       if (self$cycle) {
@@ -179,7 +192,7 @@ R6ProgressBar <- R6Class("R6ProgressBar",
     #' @description
     #' Decrement the progress bar position and redraw the bar.
     #' @param x Numeric. Amount to decrement. Default \code{1}.
-    #' @return The \code{R6ProgressBar} object (invisibly).
+    #' @return The \code{R6ProgressBar} object (invisibly) to allow chaining.
     dec = function(x = 1) {
       super$dec(x)
       if (length(self$label) > 1) {
@@ -201,7 +214,7 @@ R6ProgressBar <- R6Class("R6ProgressBar",
     #' @description
     #' Set the progress bar position to an arbitrary value and redraw.
     #' @param x Numeric. The value to set the bar to. Default \code{0}.
-    #' @return The \code{R6ProgressBar} object (invisibly).
+    #' @return The \code{R6ProgressBar} object (invisibly) to allow chaining.
     set = function(x = 0) {
       super$set(x)
       if (length(self$label) > 1) {
