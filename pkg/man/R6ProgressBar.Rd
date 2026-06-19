@@ -84,7 +84,7 @@ if (interactive()) {
 
 
 ## ------------------------------------------------
-## Method `R6ProgressBar$run`
+## Method `R6ProgressBar$run()`
 ## ------------------------------------------------
 
 pb <- R6ProgressBar$new(10)
@@ -92,66 +92,65 @@ step <- pb$run(function(x) x^2)
 result <- sapply(1:10, step)
 }
 \section{Super class}{
-\code{\link[R6Toys:R6Counter]{R6Toys::R6Counter}} -> \code{R6ProgressBar}
+\code{\link[R6Toys:R6Counter]{R6Counter}} -> \code{R6ProgressBar}
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{value}}{Integer. The current progress bar position.}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{value}}{Integer. The current progress bar position.}
 
-\item{\code{type}}{Character. The progress bar type in use:
+    \item{\code{type}}{Character. The progress bar type in use:
 \code{"txt"}, \code{"tk"}, or \code{"win"}.}
 
-\item{\code{label}}{Character. The label template or vector supplied at
+    \item{\code{label}}{Character. The label template or vector supplied at
 construction.}
 
-\item{\code{max}}{Integer. The maximum value of the progress bar.}
+    \item{\code{max}}{Integer. The maximum value of the progress bar.}
 
-\item{\code{pb}}{The underlying progress bar object returned by
+    \item{\code{pb}}{The underlying progress bar object returned by
 \code{txtProgressBar}, \code{tkProgressBar}, or
 \code{winProgressBar}.}
 
-\item{\code{cycle}}{Logical. Whether incrementing past \code{max} wraps
+    \item{\code{cycle}}{Logical. Whether incrementing past \code{max} wraps
 the display position back to 1.}
-}
-\if{html}{\out{</div>}}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Active bindings}{
-\if{html}{\out{<div class="r6-active-bindings">}}
-\describe{
-\item{\code{reset}}{Active binding. Reading resets the bar to 0.
+  \if{html}{\out{<div class="r6-active-bindings">}}
+  \describe{
+    \item{\code{reset}}{Active binding. Reading resets the bar to 0.
 Assigning a value \code{x} resets it to \code{x} instead.}
 
-\item{\code{finished}}{Active binding. Returns \code{TRUE} when
+    \item{\code{finished}}{Active binding. Returns \code{TRUE} when
 \code{value >= max}, \code{FALSE} otherwise.}
-}
-\if{html}{\out{</div>}}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-R6ProgressBar-new}{\code{R6ProgressBar$new()}}
-\item \href{#method-R6ProgressBar-inc}{\code{R6ProgressBar$inc()}}
-\item \href{#method-R6ProgressBar-dec}{\code{R6ProgressBar$dec()}}
-\item \href{#method-R6ProgressBar-set}{\code{R6ProgressBar$set()}}
-\item \href{#method-R6ProgressBar-run}{\code{R6ProgressBar$run()}}
-\item \href{#method-R6ProgressBar-clone}{\code{R6ProgressBar$clone()}}
+  \itemize{
+    \item \href{#method-R6ProgressBar-initialize}{\code{R6ProgressBar$new()}}
+    \item \href{#method-R6ProgressBar-inc}{\code{R6ProgressBar$inc()}}
+    \item \href{#method-R6ProgressBar-dec}{\code{R6ProgressBar$dec()}}
+    \item \href{#method-R6ProgressBar-set}{\code{R6ProgressBar$set()}}
+    \item \href{#method-R6ProgressBar-run}{\code{R6ProgressBar$run()}}
+    \item \href{#method-R6ProgressBar-clone}{\code{R6ProgressBar$clone()}}
+  }
 }
-}
-\if{html}{\out{
-<details open><summary>Inherited methods</summary>
+\if{html}{\out{<details open><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="R6Toys" data-topic="R6Counter" data-id="print"><a href='../../R6Toys/html/R6Counter.html#method-R6Counter-print'><code>R6Toys::R6Counter$print()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="R6Toys" data-topic="R6Counter" data-id="print"><a href='../../R6Toys/html/R6Counter.html#method-R6Counter-print'><code>R6Counter$print()</code></a></span></li>
 </ul>
-</details>
-}}
+</details>}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-R6ProgressBar-new"></a>}}
-\if{latex}{\out{\hypertarget{method-R6ProgressBar-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new \code{R6ProgressBar} object.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{R6ProgressBar$new(
+\if{html}{\out{<a id="method-R6ProgressBar-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-R6ProgressBar-initialize}{}}}
+\subsection{\code{R6ProgressBar$new()}}{
+  Create a new \code{R6ProgressBar} object.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{R6ProgressBar$new(
   max,
   min = 0,
   initial = 0,
@@ -160,151 +159,153 @@ Create a new \code{R6ProgressBar} object.
   label = "\%d",
   cycle = FALSE,
   ...
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{max}}{Integer. The maximum value of the progress bar (required).}
-
-\item{\code{min}}{Integer. The minimum value. Default \code{0}.}
-
-\item{\code{initial}}{Integer. The initial position of the bar. Default \code{0}.}
-
-\item{\code{type}}{Character. Progress bar type. One of \code{"auto"},
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{max}}{Integer. The maximum value of the progress bar (required).}
+      \item{\code{min}}{Integer. The minimum value. Default \code{0}.}
+      \item{\code{initial}}{Integer. The initial position of the bar. Default \code{0}.}
+      \item{\code{type}}{Character. Progress bar type. One of \code{"auto"},
 \code{"txt"}, \code{"tk"}, or \code{"win"}. \code{"auto"} (the
 default) selects \code{"win"} if \code{winProgressBar} is available,
 then \code{"tk"} if the \pkg{tcltk} package is available and the Tk
 display is running, otherwise \code{"txt"}.}
-
-\item{\code{style}}{Integer. Style for text progress bars (1, 2, or 3).
+      \item{\code{style}}{Integer. Style for text progress bars (1, 2, or 3).
 Only used when \code{type = "txt"}. Default \code{3}.}
-
-\item{\code{label}}{Character. Either a single \code{\link{sprintf}}-style
+      \item{\code{label}}{Character. Either a single \code{\link{sprintf}}-style
 format string (default \code{"\%d"}) evaluated with the current
 counter value, or a character vector of length \code{max} providing
 per-step labels.}
-
-\item{\code{cycle}}{Logical. If \code{TRUE}, the displayed bar position wraps
+      \item{\code{cycle}}{Logical. If \code{TRUE}, the displayed bar position wraps
 back to 1 after reaching \code{max}. Default \code{FALSE}.}
-
-\item{\code{...}}{Additional arguments passed to the underlying progress bar
+      \item{\code{...}}{Additional arguments passed to the underlying progress bar
 constructor (e.g. \code{title} for \code{winProgressBar}).}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A new \code{R6ProgressBar} object (invisibly) to allow chaining.
+  }
 }
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A new \code{R6ProgressBar} object (invisibly) to allow chaining.
-}
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-R6ProgressBar-inc"></a>}}
 \if{latex}{\out{\hypertarget{method-R6ProgressBar-inc}{}}}
-\subsection{Method \code{inc()}}{
-Increment the progress bar position and redraw the bar.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{R6ProgressBar$inc(x = 1)}\if{html}{\out{</div>}}
+\subsection{\code{R6ProgressBar$inc()}}{
+  Increment the progress bar position and redraw the bar.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{R6ProgressBar$inc(x = 1)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{x}}{Numeric. Amount to increment. Default \code{1}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    The \code{R6ProgressBar} object (invisibly) to allow chaining.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{x}}{Numeric. Amount to increment. Default \code{1}.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-The \code{R6ProgressBar} object (invisibly) to allow chaining.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-R6ProgressBar-dec"></a>}}
 \if{latex}{\out{\hypertarget{method-R6ProgressBar-dec}{}}}
-\subsection{Method \code{dec()}}{
-Decrement the progress bar position and redraw the bar.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{R6ProgressBar$dec(x = 1)}\if{html}{\out{</div>}}
+\subsection{\code{R6ProgressBar$dec()}}{
+  Decrement the progress bar position and redraw the bar.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{R6ProgressBar$dec(x = 1)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{x}}{Numeric. Amount to decrement. Default \code{1}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    The \code{R6ProgressBar} object (invisibly) to allow chaining.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{x}}{Numeric. Amount to decrement. Default \code{1}.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-The \code{R6ProgressBar} object (invisibly) to allow chaining.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-R6ProgressBar-set"></a>}}
 \if{latex}{\out{\hypertarget{method-R6ProgressBar-set}{}}}
-\subsection{Method \code{set()}}{
-Set the progress bar position to an arbitrary value and redraw.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{R6ProgressBar$set(x = 0)}\if{html}{\out{</div>}}
+\subsection{\code{R6ProgressBar$set()}}{
+  Set the progress bar position to an arbitrary value and redraw.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{R6ProgressBar$set(x = 0)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{x}}{Numeric. The value to set the bar to. Default \code{0}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    The \code{R6ProgressBar} object (invisibly) to allow chaining.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{x}}{Numeric. The value to set the bar to. Default \code{0}.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-The \code{R6ProgressBar} object (invisibly) to allow chaining.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-R6ProgressBar-run"></a>}}
 \if{latex}{\out{\hypertarget{method-R6ProgressBar-run}{}}}
-\subsection{Method \code{run()}}{
-Wrap a function so that every call automatically increments the
+\subsection{\code{R6ProgressBar$run()}}{
+  Wrap a function so that every call automatically increments the
 progress bar by 1 before invoking the original function.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{R6ProgressBar$run(FUN = I)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{FUN}}{A function to wrap. Defaults to \code{\link{identity}}.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A new function with the same signature as \code{FUN} that
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{R6ProgressBar$run(FUN = I)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{FUN}}{A function to wrap. Defaults to \code{\link{identity}}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A new function with the same signature as \code{FUN} that
   increments the bar on each call.
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{pb <- R6ProgressBar$new(10)
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{pb <- R6ProgressBar$new(10)
 step <- pb$run(function(x) x^2)
 result <- sapply(1:10, step)
 }
-\if{html}{\out{</div>}}
-
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-R6ProgressBar-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-R6ProgressBar-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{R6ProgressBar$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{R6ProgressBar$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{R6ProgressBar$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

@@ -54,168 +54,175 @@ puz$generate(autoprint = TRUE, autoplot = FALSE)
 
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{autoprint}}{Logical. If \code{TRUE}, the puzzle state is
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{autoprint}}{Logical. If \code{TRUE}, the puzzle state is
 printed to the console automatically after \code{$generate()}
 or \code{$guess()}.}
 
-\item{\code{autoplot}}{Logical. If \code{TRUE}, the puzzle state is
+    \item{\code{autoplot}}{Logical. If \code{TRUE}, the puzzle state is
 rendered as a plot automatically after \code{$generate()} or
 \code{$guess()}.}
 
-\item{\code{incorrect}}{Named list (letters A--J). Each element is a
+    \item{\code{incorrect}}{Named list (letters A--J). Each element is a
 numeric vector of digit values guessed incorrectly for that
 letter.}
 
-\item{\code{correct}}{Named character vector (letters A--J). Each
+    \item{\code{correct}}{Named character vector (letters A--J). Each
 element is the digit string for a correctly solved letter, or
 \code{""} for unsolved letters.}
 
-\item{\code{original}}{Character string. The puzzle layout as first
+    \item{\code{original}}{Character string. The puzzle layout as first
 generated, with every digit replaced by its assigned letter.}
 
-\item{\code{current}}{Character string. The current puzzle layout;
+    \item{\code{current}}{Character string. The current puzzle layout;
 correctly guessed letters are replaced back with their digits.}
 
-\item{\code{plt.cex}}{Numeric. Character expansion factor used when
+    \item{\code{plt.cex}}{Numeric. Character expansion factor used when
 plotting the puzzle. Default \code{2.5}.}
-}
-\if{html}{\out{</div>}}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Active bindings}{
-\if{html}{\out{<div class="r6-active-bindings">}}
-\describe{
-\item{\code{a}}{Shorthand active binding for letter A (lower-case).}
+  \if{html}{\out{<div class="r6-active-bindings">}}
+  \describe{
+    \item{\code{a}}{Shorthand active binding for letter A (lower-case).}
 
-\item{\code{A}}{Shorthand active binding for letter A (upper-case).}
+    \item{\code{A}}{Shorthand active binding for letter A (upper-case).}
 
-\item{\code{b}}{Shorthand active binding for letter B (lower-case).}
+    \item{\code{b}}{Shorthand active binding for letter B (lower-case).}
 
-\item{\code{B}}{Shorthand active binding for letter B (upper-case).}
+    \item{\code{B}}{Shorthand active binding for letter B (upper-case).}
 
-\item{\code{c}}{Shorthand active binding for letter C (lower-case).}
+    \item{\code{c}}{Shorthand active binding for letter C (lower-case).}
 
-\item{\code{C}}{Shorthand active binding for letter C (upper-case).}
+    \item{\code{C}}{Shorthand active binding for letter C (upper-case).}
 
-\item{\code{d}}{Shorthand active binding for letter D (lower-case).}
+    \item{\code{d}}{Shorthand active binding for letter D (lower-case).}
 
-\item{\code{D}}{Shorthand active binding for letter D (upper-case).}
+    \item{\code{D}}{Shorthand active binding for letter D (upper-case).}
 
-\item{\code{e}}{Shorthand active binding for letter E (lower-case).}
+    \item{\code{e}}{Shorthand active binding for letter E (lower-case).}
 
-\item{\code{E}}{Shorthand active binding for letter E (upper-case).}
+    \item{\code{E}}{Shorthand active binding for letter E (upper-case).}
 
-\item{\code{f}}{Shorthand active binding for letter F (lower-case).}
+    \item{\code{f}}{Shorthand active binding for letter F (lower-case).}
 
-\item{\code{F}}{Shorthand active binding for letter F (upper-case).}
+    \item{\code{F}}{Shorthand active binding for letter F (upper-case).}
 
-\item{\code{g}}{Shorthand active binding for letter G (lower-case).}
+    \item{\code{g}}{Shorthand active binding for letter G (lower-case).}
 
-\item{\code{G}}{Shorthand active binding for letter G (upper-case).}
+    \item{\code{G}}{Shorthand active binding for letter G (upper-case).}
 
-\item{\code{h}}{Shorthand active binding for letter H (lower-case).}
+    \item{\code{h}}{Shorthand active binding for letter H (lower-case).}
 
-\item{\code{H}}{Shorthand active binding for letter H (upper-case).}
+    \item{\code{H}}{Shorthand active binding for letter H (upper-case).}
 
-\item{\code{i}}{Shorthand active binding for letter I (lower-case).}
+    \item{\code{i}}{Shorthand active binding for letter I (lower-case).}
 
-\item{\code{I}}{Shorthand active binding for letter I (upper-case).}
+    \item{\code{I}}{Shorthand active binding for letter I (upper-case).}
 
-\item{\code{j}}{Shorthand active binding for letter J (lower-case).}
+    \item{\code{j}}{Shorthand active binding for letter J (lower-case).}
 
-\item{\code{J}}{Shorthand active binding for letter J (upper-case).}
-}
-\if{html}{\out{</div>}}
+    \item{\code{J}}{Shorthand active binding for letter J (upper-case).}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-MPuz-generate}{\code{MPuz$generate()}}
-\item \href{#method-MPuz-print}{\code{MPuz$print()}}
-\item \href{#method-MPuz-plot}{\code{MPuz$plot()}}
-\item \href{#method-MPuz-new}{\code{MPuz$new()}}
-\item \href{#method-MPuz-guess}{\code{MPuz$guess()}}
-\item \href{#method-MPuz-finished}{\code{MPuz$finished()}}
-\item \href{#method-MPuz-score}{\code{MPuz$score()}}
-\item \href{#method-MPuz-clone}{\code{MPuz$clone()}}
-}
+  \itemize{
+    \item \href{#method-MPuz-generate}{\code{MPuz$generate()}}
+    \item \href{#method-MPuz-print}{\code{MPuz$print()}}
+    \item \href{#method-MPuz-plot}{\code{MPuz$plot()}}
+    \item \href{#method-MPuz-initialize}{\code{MPuz$new()}}
+    \item \href{#method-MPuz-guess}{\code{MPuz$guess()}}
+    \item \href{#method-MPuz-finished}{\code{MPuz$finished()}}
+    \item \href{#method-MPuz-score}{\code{MPuz$score()}}
+    \item \href{#method-MPuz-clone}{\code{MPuz$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MPuz-generate"></a>}}
 \if{latex}{\out{\hypertarget{method-MPuz-generate}{}}}
-\subsection{Method \code{generate()}}{
-Generate a new multiplication puzzle.  Randomly selects a
+\subsection{\code{MPuz$generate()}}{
+  Generate a new multiplication puzzle.  Randomly selects a
 3-digit multiplicand and a 2-digit multiplier such that both
 partial products are at least 4 digits and the final product is
 at least 5 digits.  Digits 0--9 are mapped one-to-one to
 letters A--J.  Resets \code{correct}, \code{incorrect},
 \code{original}, and \code{current}.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MPuz$generate(autoprint = FALSE, autoplot = !autoprint)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{autoprint}}{Logical. Overrides the \code{autoprint} field
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MPuz$generate(autoprint = FALSE, autoplot = !autoprint)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{autoprint}}{Logical. Overrides the \code{autoprint} field
 for this call and all subsequent calls. Default \code{FALSE}.}
-
-\item{\code{autoplot}}{Logical. Overrides the \code{autoplot} field
+      \item{\code{autoplot}}{Logical. Overrides the \code{autoplot} field
 for this call and all subsequent calls.
 Default \code{!autoprint}.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
-}
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MPuz-print"></a>}}
 \if{latex}{\out{\hypertarget{method-MPuz-print}{}}}
-\subsection{Method \code{print()}}{
-Print the current puzzle state to the console.  Solved letters
+\subsection{\code{MPuz$print()}}{
+  Print the current puzzle state to the console.  Solved letters
 appear as their corresponding digit; unsolved positions still
 show the letter.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MPuz$print()}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MPuz$print()}
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MPuz-plot"></a>}}
 \if{latex}{\out{\hypertarget{method-MPuz-plot}{}}}
-\subsection{Method \code{plot()}}{
-Render the current puzzle state as a monospace text graphic in
+\subsection{\code{MPuz$plot()}}{
+  Render the current puzzle state as a monospace text graphic in
 the active graphics device.  Plot margins are suppressed; text
 size is controlled by \code{plt.cex}.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MPuz$plot()}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MPuz$plot()}
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-MPuz-new"></a>}}
-\if{latex}{\out{\hypertarget{method-MPuz-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new \code{MPuz} object and generate an initial puzzle.
+\if{html}{\out{<a id="method-MPuz-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-MPuz-initialize}{}}}
+\subsection{\code{MPuz$new()}}{
+  Create a new \code{MPuz} object and generate an initial puzzle.
 Arguments are forwarded to \code{$generate()}.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MPuz$new(...)}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MPuz$new(...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{...}}{Arguments passed to \code{$generate()}
+(\code{autoprint}, \code{autoplot}).}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{...}}{Arguments passed to \code{$generate()}
-(\code{autoprint}, \code{autoplot}).}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MPuz-guess"></a>}}
 \if{latex}{\out{\hypertarget{method-MPuz-guess}{}}}
-\subsection{Method \code{guess()}}{
-Submit one or more letter-digit guesses.  Named arguments map
+\subsection{\code{MPuz$guess()}}{
+  Submit one or more letter-digit guesses.  Named arguments map
 letter names to digit values (0--9).  Multiple letters and/or a
 vector of candidate digits per letter may be supplied in a
 single call.  Correct guesses update \code{correct} and
@@ -224,68 +231,76 @@ single call.  Correct guesses update \code{correct} and
 \code{autoprint} or \code{autoplot} is \code{TRUE} the updated
 puzzle is displayed; a congratulatory message is shown when
 \code{$finished()} becomes \code{TRUE}.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MPuz$guess(...)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{...}}{Named arguments of the form \code{LETTER = digit}.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MPuz$guess(...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{...}}{Named arguments of the form \code{LETTER = digit}.
 Letter names are coerced to upper-case.  A single argument
 may be a vector of candidate digits to try in sequence.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A logical vector (invisibly) indicating which guesses
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A logical vector (invisibly) indicating which guesses
   were correct (\code{TRUE}) or incorrect (\code{FALSE}).
+  }
 }
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MPuz-finished"></a>}}
 \if{latex}{\out{\hypertarget{method-MPuz-finished}{}}}
-\subsection{Method \code{finished()}}{
-Test whether all letters in the puzzle have been solved.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MPuz$finished()}\if{html}{\out{</div>}}
+\subsection{\code{MPuz$finished()}}{
+  Test whether all letters in the puzzle have been solved.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MPuz$finished()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{TRUE} if no letters remain in \code{current};
+  \code{FALSE} otherwise.
+  }
 }
 
-\subsection{Returns}{
-\code{TRUE} if no letters remain in \code{current};
-  \code{FALSE} otherwise.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MPuz-score"></a>}}
 \if{latex}{\out{\hypertarget{method-MPuz-score}{}}}
-\subsection{Method \code{score()}}{
-Report the number of correct and incorrect guesses made so far.
+\subsection{\code{MPuz$score()}}{
+  Report the number of correct and incorrect guesses made so far.
 Prints a one-line summary to the console.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MPuz$score()}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MPuz$score()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A named integer vector
+  \code{c(correct = ..., incorrect = ...)} (invisibly).
+  }
 }
 
-\subsection{Returns}{
-A named integer vector
-  \code{c(correct = ..., incorrect = ...)} (invisibly).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MPuz-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-MPuz-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MPuz$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{MPuz$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MPuz$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

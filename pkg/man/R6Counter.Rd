@@ -59,152 +59,163 @@ cnt$value        # 0
 
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{value}}{Numeric. The current counter value.}
-}
-\if{html}{\out{</div>}}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{value}}{Numeric. The current counter value.}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Active bindings}{
-\if{html}{\out{<div class="r6-active-bindings">}}
-\describe{
-\item{\code{pp}}{Prefix-increment active binding. Reading increments
+  \if{html}{\out{<div class="r6-active-bindings">}}
+  \describe{
+    \item{\code{pp}}{Prefix-increment active binding. Reading increments
 the counter by 1 and returns the new value. Assigning a
 value \code{x} increments by \code{x} instead.}
 
-\item{\code{mm}}{Prefix-decrement active binding. Reading decrements
+    \item{\code{mm}}{Prefix-decrement active binding. Reading decrements
 the counter by 1 and returns the new value. Assigning a
 value \code{x} decrements by \code{x} instead.}
 
-\item{\code{ppp}}{Postfix-increment active binding. Returns the
+    \item{\code{ppp}}{Postfix-increment active binding. Returns the
 current value, then increments by 1. Assigning a value
 \code{x} increments by \code{x} instead.}
 
-\item{\code{mmm}}{Postfix-decrement active binding. Returns the
+    \item{\code{mmm}}{Postfix-decrement active binding. Returns the
 current value, then decrements by 1. Assigning a value
 \code{x} decrements by \code{x} instead.}
-}
-\if{html}{\out{</div>}}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-R6Counter-new}{\code{R6Counter$new()}}
-\item \href{#method-R6Counter-set}{\code{R6Counter$set()}}
-\item \href{#method-R6Counter-print}{\code{R6Counter$print()}}
-\item \href{#method-R6Counter-inc}{\code{R6Counter$inc()}}
-\item \href{#method-R6Counter-dec}{\code{R6Counter$dec()}}
-\item \href{#method-R6Counter-clone}{\code{R6Counter$clone()}}
-}
+  \itemize{
+    \item \href{#method-R6Counter-initialize}{\code{R6Counter$new()}}
+    \item \href{#method-R6Counter-set}{\code{R6Counter$set()}}
+    \item \href{#method-R6Counter-print}{\code{R6Counter$print()}}
+    \item \href{#method-R6Counter-inc}{\code{R6Counter$inc()}}
+    \item \href{#method-R6Counter-dec}{\code{R6Counter$dec()}}
+    \item \href{#method-R6Counter-clone}{\code{R6Counter$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-R6Counter-new"></a>}}
-\if{latex}{\out{\hypertarget{method-R6Counter-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new \code{R6Counter} object.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{R6Counter$new(x = 0, ...)}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-R6Counter-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-R6Counter-initialize}{}}}
+\subsection{\code{R6Counter$new()}}{
+  Create a new \code{R6Counter} object.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{R6Counter$new(x = 0, ...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{x}}{Numeric. Initial counter value. Default \code{0}.}
+      \item{\code{...}}{Currently unused; reserved for future use.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{x}}{Numeric. Initial counter value. Default \code{0}.}
-
-\item{\code{...}}{Currently unused; reserved for future use.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-R6Counter-set"></a>}}
 \if{latex}{\out{\hypertarget{method-R6Counter-set}{}}}
-\subsection{Method \code{set()}}{
-Set the counter to a specific value.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{R6Counter$set(x = 0)}\if{html}{\out{</div>}}
+\subsection{\code{R6Counter$set()}}{
+  Set the counter to a specific value.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{R6Counter$set(x = 0)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{x}}{Numeric. Value to assign to the counter.
+Default \code{0}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    The \code{R6Counter} object (invisibly), enabling
+  method chaining.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{x}}{Numeric. Value to assign to the counter.
-Default \code{0}.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-The \code{R6Counter} object (invisibly), enabling
-  method chaining.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-R6Counter-print"></a>}}
 \if{latex}{\out{\hypertarget{method-R6Counter-print}{}}}
-\subsection{Method \code{print()}}{
-Print the current counter value to the console.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{R6Counter$print()}\if{html}{\out{</div>}}
+\subsection{\code{R6Counter$print()}}{
+  Print the current counter value to the console.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{R6Counter$print()}
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-R6Counter-inc"></a>}}
 \if{latex}{\out{\hypertarget{method-R6Counter-inc}{}}}
-\subsection{Method \code{inc()}}{
-Increment the counter.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{R6Counter$inc(x = 1)}\if{html}{\out{</div>}}
+\subsection{\code{R6Counter$inc()}}{
+  Increment the counter.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{R6Counter$inc(x = 1)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{x}}{Numeric. Amount to add. Default \code{1}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    The \code{R6Counter} object (invisibly), enabling
+  method chaining.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{x}}{Numeric. Amount to add. Default \code{1}.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-The \code{R6Counter} object (invisibly), enabling
-  method chaining.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-R6Counter-dec"></a>}}
 \if{latex}{\out{\hypertarget{method-R6Counter-dec}{}}}
-\subsection{Method \code{dec()}}{
-Decrement the counter.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{R6Counter$dec(x = 1)}\if{html}{\out{</div>}}
+\subsection{\code{R6Counter$dec()}}{
+  Decrement the counter.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{R6Counter$dec(x = 1)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{x}}{Numeric. Amount to subtract. Default \code{1}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    The \code{R6Counter} object (invisibly), enabling
+  method chaining.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{x}}{Numeric. Amount to subtract. Default \code{1}.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-The \code{R6Counter} object (invisibly), enabling
-  method chaining.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-R6Counter-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-R6Counter-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{R6Counter$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{R6Counter$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{R6Counter$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }
