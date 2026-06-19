@@ -12,3 +12,4 @@ URL: https://github.com/glsnow/R6Toys
 Encoding: UTF-8
 Imports: R6
 Config/roxygen2/version: 8.0.0
+RoxygenNote: 7.3.3

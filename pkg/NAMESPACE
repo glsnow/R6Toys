@@ -2,4 +2,5 @@
 
 export(MPuz)
 export(R6Counter)
+export(R6ProgressBar)
 importFrom(R6,R6Class)
