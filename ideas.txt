@@ -5,14 +5,14 @@ Cards
 Spirograph
 Battleship
 Maze
-Mastermind
+Mastermind https://en.wikipedia.org/wiki/Mastermind_(board_game)
 wordle
-Blackbox
+Black box https://en.wikipedia.org/wiki/Black_Box_(game)
 TicTacToe
 WordScramble
 Hangman
 mpuz
-dots and lines
+dots and lines  https://en.wikipedia.org/wiki/Dots_and_boxes
 bingo card generator
 Mad Libs
 Algebra Attack
@@ -21,16 +21,20 @@ robots (move from robots, random teleport, they crash)
 slide rule
 napier bones
 abacus
-Peg Solitaire
+Peg Solitaire  https://en.wikipedia.org/wiki/Peg_solitaire
 pieces of eight
 Morse Code (lty in plots, audio)
 math sticks generator
 function objectizer (run on function, then set arguments, update arguments and automatically rerun function, old args remain).
+function tracker (keep track of arguments to, and result of function)
+Memoize function (keep track of arguments and results, if previous arguments are reused, just give same result instead of rerunning).
 Permutations and Combinations
 Turtle Graphics
 Progress Bars
 Life (Conway's game of)
 sudoku
 kenken
+mancala  https://en.wikipedia.org/wiki/Mancala
+chess/checkers/go boards
 
 

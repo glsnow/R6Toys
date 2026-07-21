@@ -1,6 +1,6 @@
 library(R6)
 
-TurtleGraphics <- R6Class("TurtleGraphics",
+R6TurtleGraphics <- R6Class("R6TurtleGraphics",
   public = list(
     show.turtle=TRUE,
     initialize=function(size=100, show.turtle=TRUE) {
@@ -23,6 +23,7 @@ TurtleGraphics <- R6Class("TurtleGraphics",
     cur.dir = 0,
     cur.color = 'blue',
     cur.lwd = 1,
+    pen.pch = 10,
     last.turn = 15,
     last.move = 25,
     pen.down = FALSE,
@@ -43,7 +44,7 @@ TurtleGraphics <- R6Class("TurtleGraphics",
             col=self$turtle.col)
       if(self$pen.down) {
         points(self$cur.pos[1], self$cur.pos[2], col=self$cur.color,
-               cex=2)
+               cex=2, pch=self$pen.pch)
       }
     },
     MoveTo = function(x,y) {
@@ -88,7 +89,10 @@ TurtleGraphics <- R6Class("TurtleGraphics",
     },
     PenUp = function() {
       self$pen.down=FALSE
-      if(self$show.turtle) self$drawTurtle() 
+      if(self$show.turtle){
+        replayPlot(self$recordedplot[[self$rp]])
+        self$drawTurtle() 
+      } 
       invisible(self)
     },
     move = function(dist) {
@@ -130,11 +134,11 @@ TurtleGraphics <- R6Class("TurtleGraphics",
     },
     up = function(x) {
       self$PenUp()
-      invisible(self)
+      invisible()
     },
     down = function(x) {
       self$PenDown()
-      invisible(self)
+      invisible()
     },
     m = function(dist) {
       if(missing(dist)) {

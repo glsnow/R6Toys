@@ -4,7 +4,7 @@ library(R6)
 #'
 #' @description
 #' An R6 class that generates and manages a multiplication
-#' cryptarithmetic puzzle.  Each digit (0--9) in a standard
+#' crypt-arithmetic puzzle.  Each digit (0--9) in a standard
 #' long-multiplication layout is replaced by a unique letter (A--J).
 #' Players guess the digit that each letter represents until the
 #' puzzle is completely solved.
@@ -34,6 +34,9 @@ library(R6)
 #' # View current state as text
 #' puz$print()
 #'
+#' # View current state in a plot
+#' puz$plot()
+#' 
 #' # Submit guesses
 #' puz$guess(A = 5, B = 3)
 #'
@@ -92,10 +95,10 @@ MPuz <- R6Class("MPuz",
     #' at least 5 digits.  Digits 0--9 are mapped one-to-one to
     #' letters A--J.  Resets \code{correct}, \code{incorrect},
     #' \code{original}, and \code{current}.
-    #' @param autoprint Logical. Overrides the \code{autoprint} field
-    #'   for this call and all subsequent calls. Default \code{FALSE}.
-    #' @param autoplot Logical. Overrides the \code{autoplot} field
-    #'   for this call and all subsequent calls.
+    #' @param autoprint Logical. Sets the \code{autoprint} field,
+    #'   \code{TRUE} means print to the console. Default \code{FALSE}.
+    #' @param autoplot Logical. Sets the \code{autoplot} field,
+    #'   \code{TRUE} means plot the puzzle on the graphics device.
     #'   Default \code{!autoprint}.
     generate = function(autoprint = FALSE, autoplot = !autoprint) {
       self$autoprint <- autoprint

@@ -1,86 +1,5 @@
 library(R6)
-
-## Counter ----
-
-Counter <- R6Class('Counter',
-                   public = list(
-                     val = 0,
-                     print = function() {
-                       print(self$val)
-                     },
-                     initialize = function(value=0) {
-                       self$val <- value
-                     },
-                     Inc = function(n=1) {
-                       self$val <- self$val + n
-                       invisible(self)
-                     },
-                     Dec = function(n=1) {
-                       self$val <- self$val - n
-                       invisible(self)
-                     }
-                   ),
-                   active=list(
-                     pp = function(n=1) {
-                       tmp <- self$val
-                       self$Inc(n)
-                       tmp
-                     },
-                     ppp = function(n=1) {
-                       self$Inc(n)
-                       self$val
-                     },
-                     mm = function(n=1) {
-                       tmp <- self$val
-                       self$Dec(n)
-                       tmp
-                     },
-                     pmm = function(n=1) {
-                       self$Dec(n)
-                       self$val
-                     },
-                     mmm = function(n=1) {
-                       self$Dec(n)
-                       self$val
-                     }
-                   )
-                   )
-
-a <- Counter$new()
-a$Inc()
-a
-a$Inc()$Inc()$Inc()
-a
-a$Dec(2)
-a
-a$pp
-a$pp <- 5
-a
-a$ppp <- 5
-a
-
-a <- Counter$new(5)
-
-while(a$mm) {
-  print(a)
-}
-
-a$val <- 5
-
-while(a$pmm) {
-  print(a)
-}
-
-a$val <- 5
-
-while(a$val) {
-  print(a$mm)
-}
-
-a$val <- 5
-while(a$val) {
-  print(a$mmm)
-}
+library(R6Toys)
 
 ## Life ----
 
@@ -218,8 +137,8 @@ Life <- R6Class(
     },
     tick = function(n=1, plot=self$autoplot) {
       nbr <- expand.grid(-1:1, -1:1)
-      ii <- Counter$new(n)
-      while(ii$mm) {
+      ii <- R6Counter$new(n)
+      while(ii$mmm) {
         self$prev <- self$cur
         tmp <- self$cur
         if(nrow(tmp) < 1) break
@@ -265,7 +184,7 @@ Life <- R6Class(
         self$applyBound()
         if(plot) {
           self$plot()
-          if(ii$val){
+          if(ii$value){
             Sys.sleep(self$pause)
           }
         }

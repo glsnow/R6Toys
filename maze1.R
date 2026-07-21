@@ -77,7 +77,7 @@ while(m.pts$length) {
         col = gcols)
   points(cur[1], cur[2], pch=16, col='blue', cex=2)
 
-  Sys.sleep(0.1)
+  Sys.sleep(0.2)
   
   
   for(i in sample(4)) {

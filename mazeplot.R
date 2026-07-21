@@ -16,17 +16,23 @@ PointStack <- R6Class("PointStack",
                             private$xx[self$length] <- x
                             private$yy[self$length] <- y
                           }
+                          return(invisible(self))
                         },
                         pop = function() {
                           if(self$length < 1) return(NULL)
                           ol <- self$length
                           self$length <- ol - 1
                           return(c(private$xx[ol], private$yy[ol]))
+                        },
+                        peek = function() {
+                          if(self$length < 1) return(NULL)
+                          return(c(private$xx[self$length],
+                                   private$yy[self$length]))
                         }
                       ),
                       private = list(
-                        xx = numeric(10),
-                        yy = numeric(10)
+                        xx = numeric(100),
+                        yy = numeric(100)
                       ),
                       active=list(
                         x = function() private$xx[seq_len(self$length)],
@@ -63,10 +69,11 @@ cols <- circVec$new(c('lightblue', 'yellow', 'green', 'pink'))
 
 eye.param <- c(0.5, 0.5, 1)
 
-plotProjRect <- function(xyz, eye.param=eye.param, fill=NA) {
+plotProjRect <- function(xyz, eye.param=eye.param, fill=NA, 
+                         border='black') {
   x.new <- (xyz[,1]-eye.param[1])*(eye.param[3])/(xyz[,3]+eye.param[3]) + eye.param[1]
   y.new <- (xyz[,2]-eye.param[2])*(eye.param[3])/(xyz[,3]+eye.param[3]) + eye.param[2]
-  polygon(x.new, y.new, border='black', col=fill)
+  polygon(x.new, y.new, border=border, col=fill)
 }
 
 plotmaze2d <- function(maze, position, direction=NA,
@@ -105,6 +112,8 @@ plotmaze2d <- function(maze, position, direction=NA,
 }
 
 plotmaze2d(maze, start, 1)
+
+## randtoolbox::sobol for positioning crumbs
 
 plotmaze3d <- function(maze, position, direction) {
   m.pts <- PointStack$new()
@@ -166,7 +175,83 @@ plotmaze3d <- function(maze, position, direction) {
 }
 
 
+plotmaze3d_haze <- function(maze, position, direction, hazeval=5) {
+  m.pts <- PointStack$new()
+  
+  cur.pt <- position
+  dirmat <- dirmat/2
+  dirvec <- circVec$new(1:4)
+  
+  while(maze[cur.pt[1], cur.pt[2]]==0){
+    m.pts$push(cur.pt)
+    cur.pt <- cur.pt + dirmat[direction,]
+  }
+
+  old.par <- par(mar=c(0,0,0,0)+0.1)
+  on.exit(par(old.par))
+  plot.new()
+  plot.window(0:1, 0:1, asp=1)
+  rect(0,0,1,1, col='lightgrey', border='black')
+  clip(0,1,0,1)
+  
+  while(m.pts$length) {
+    cur.pt <- m.pts$pop()
+    # dist <- (cur.pt[1]-position[1])*dirmat[direction,1] + 
+    #   (cur.pt[2]-position[2])*dirmat[direction,2]
+    dist <- m.pts$length + 0.5
+    hv <- pmax(0, 1-m.pts$length/hazeval)
+    
+    if(maze[rbind(cur.pt+dirmat[direction,])]==1) {  # draw back wall
+      plotProjRect(cbind(c(0,0,1,1), c(0,1,1,0), dist),
+                   eye.param, adjustcolor(cols$val(direction), hv),
+                   border=adjustcolor('black', hv))
+    }
+    plotProjRect(cbind(c(0,1,1,0), 1, pmax(0,c(dist-1, dist-1, dist, dist))),
+                 eye.param, adjustcolor('grey', hv),
+                 border=adjustcolor('black', hv)) # ceiling
+    plotProjRect(cbind(c(0,1,1,0), 0, pmax(0,c(dist-1, dist-1, dist, dist))),
+                 eye.param, adjustcolor('darkgrey', hv),
+                 border=adjustcolor('black', hv)) # floor
+    if(maze[rbind(cur.pt+dirmat[dirvec$left(direction),])]==1) { # left wall
+      plotProjRect(cbind(0, c(0,0,1,1), pmax(0,c(dist, dist-1, dist-1, dist))),
+                   eye.param, fill=adjustcolor(cols$left(direction), hv),
+                   border=adjustcolor('black', hv))
+    } else { # left open
+      plotProjRect(cbind(c(-1,-1,0,0), c(0,1,1,0), dist),
+                   eye.param, adjustcolor(cols$val(direction), hv),
+                   border=adjustcolor('black', hv))  # back
+      plotProjRect(cbind(c(-1,0,0,-1), 1, pmax(0,c(dist-1, dist-1, dist, dist))),
+                   eye.param, adjustcolor('grey', hv),
+                   border=adjustcolor('black', hv)) # ceiling
+      plotProjRect(cbind(c(-1,0,0,-1), 0, pmax(0,c(dist-1, dist-1, dist, dist))),
+                   eye.param, adjustcolor('darkgrey', hv),
+                   border=adjustcolor('black', hv)) # floor
+    }
+    if(maze[rbind(cur.pt+dirmat[dirvec$right(direction),])]==1) { # right wall
+      plotProjRect(cbind(1, c(0,0,1,1), pmax(0,c(dist, dist-1, dist-1, dist))),
+                   eye.param, fill=adjustcolor(cols$right(direction), hv),
+                   border=adjustcolor('black', hv))
+    } else { # right open
+      plotProjRect(cbind(c(1,1,2,2), c(0,1,1,0), dist),
+                   eye.param, adjustcolor(cols$val(direction), hv),
+                   border=adjustcolor('black', hv))  # back
+      plotProjRect(cbind(c(1,2,2,1), 1, pmax(0,c(dist-1, dist-1, dist, dist))),
+                   eye.param, adjustcolor('grey', hv),
+                   border=adjustcolor('black', hv)) # ceiling
+      plotProjRect(cbind(c(1,2,2,1), 0, pmax(0,c(dist-1, dist-1, dist, dist))),
+                   eye.param, adjustcolor('darkgrey', hv),
+                   border=adjustcolor('black', hv)) # floor
+    }
+    
+  }
+  
+}
+
+
+
+
 plotmaze3d(maze, c(3,5), 1)
+plotmaze3d_haze(maze, c(3,5), 1, Inf)
 
 
 dev.new(width=14, height=7, noRStudioGD = TRUE)
