@@ -5,7 +5,7 @@
 \title{Multiplication Puzzle Game}
 \description{
 An R6 class that generates and manages a multiplication
-cryptarithmetic puzzle.  Each digit (0--9) in a standard
+crypt-arithmetic puzzle.  Each digit (0--9) in a standard
 long-multiplication layout is replaced by a unique letter (A--J).
 Players guess the digit that each letter represents until the
 puzzle is completely solved.
@@ -36,6 +36,9 @@ puz <- MPuz$new()
 
 # View current state as text
 puz$print()
+
+# View current state in a plot
+puz$plot()
 
 # Submit guesses
 puz$guess(A = 5, B = 3)
@@ -159,10 +162,10 @@ letters A--J.  Resets \code{correct}, \code{incorrect},
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{autoprint}}{Logical. Overrides the \code{autoprint} field
-for this call and all subsequent calls. Default \code{FALSE}.}
-      \item{\code{autoplot}}{Logical. Overrides the \code{autoplot} field
-for this call and all subsequent calls.
+      \item{\code{autoprint}}{Logical. Sets the \code{autoprint} field,
+\code{TRUE} means print to the console. Default \code{FALSE}.}
+      \item{\code{autoplot}}{Logical. Sets the \code{autoplot} field,
+\code{TRUE} means plot the puzzle on the graphics device.
 Default \code{!autoprint}.}
     }
     \if{html}{\out{</div>}}

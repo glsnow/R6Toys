@@ -10,11 +10,6 @@ efficient insertion, removal, and bidirectional traversal without copying
 data.
 }
 \details{
-Nodes are lightweight environments with three fields: \code{value},
-\code{prv} (pointer to the previous node), and \code{nxt} (pointer to the
-next node). The list tracks its head (\code{first}), tail (\code{last}),
-and an optional iterator position (\code{current}) in private fields.
-
 All mutating methods return \code{invisible(self)}, enabling method chaining:
 \preformatted{
 dll <- R6DLL$new()
@@ -132,19 +127,6 @@ list.
 }
 }
 
-\section{Active bindings}{
-
-\describe{
-  \item{\code{finished}}{
-    Read-only logical. Returns \code{TRUE} when \code{current} is
-    \code{NULL}, indicating that the iterator has not been started or has
-    walked off one end of the list. Returns \code{FALSE} while
-    \code{current} points to a valid node. Typically used as the loop
-    condition with \code{iter_next()} or \code{iter_prev()}.
-  }
-}
-}
-
 \section{Structural modification}{
 
 \describe{
@@ -201,6 +183,19 @@ list.
     }
     The iterator's \code{current} position is saved before traversal and
     restored afterwards.
+  }
+}
+}
+
+\section{Active bindings}{
+
+\describe{
+  \item{\code{finished}}{
+    Read-only logical. Returns \code{TRUE} when \code{current} is
+    \code{NULL}, indicating that the iterator has not been started or has
+    walked off one end of the list. Returns \code{FALSE} while
+    \code{current} points to a valid node. Typically used as the loop
+    condition with \code{iter_next()} or \code{iter_prev()}.
   }
 }
 }
