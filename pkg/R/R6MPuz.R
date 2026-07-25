@@ -10,7 +10,7 @@ library(R6)
 #' puzzle is completely solved.
 #'
 #' @details
-#' A new puzzle is created with \code{MPuz$new()}.  The puzzle
+#' A new puzzle is created with \code{R6MPuz$new()}.  The puzzle
 #' displays a multiplication of a 3-digit number by a 2-digit number,
 #' together with both partial products and the final product.  Every
 #' distinct digit is encoded as a distinct letter so that no
@@ -24,12 +24,12 @@ library(R6)
 #' available as active bindings.  Assigning a digit value to a
 #' binding is shorthand for calling \code{$guess()}.  For example:
 #'
-#' \preformatted{puz <- MPuz$new()
+#' \preformatted{puz <- R6MPuz$new()
 #' puz$A <- 3   # equivalent to puz$guess(A = 3)
 #' puz$b <- 7   # equivalent to puz$guess(B = 7)}
 #'
 #' @examples
-#' puz <- MPuz$new()
+#' puz <- R6MPuz$new()
 #'
 #' # View current state as text
 #' puz$print()
@@ -153,7 +153,7 @@ R6MPuz <- R6Class("R6MPuz",
     },
 
     #' @description
-    #' Create a new \code{MPuz} object and generate an initial puzzle.
+    #' Create a new \code{R6MPuz} object and generate an initial puzzle.
     #' Arguments are forwarded to \code{$generate()}.
     #' @param ... Arguments passed to \code{$generate()}
     #'   (\code{autoprint}, \code{autoplot}).

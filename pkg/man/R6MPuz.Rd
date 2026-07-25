@@ -11,7 +11,7 @@ Players guess the digit that each letter represents until the
 puzzle is completely solved.
 }
 \details{
-A new puzzle is created with \code{MPuz$new()}.  The puzzle
+A new puzzle is created with \code{R6MPuz$new()}.  The puzzle
 displays a multiplication of a 3-digit number by a 2-digit number,
 together with both partial products and the final product.  Every
 distinct digit is encoded as a distinct letter so that no
@@ -26,13 +26,13 @@ Letters \code{A}--\code{J} (both upper- and lower-case) are
 available as active bindings.  Assigning a digit value to a
 binding is shorthand for calling \code{$guess()}.  For example:
 
-\preformatted{puz <- MPuz$new()
+\preformatted{puz <- R6MPuz$new()
 puz$A <- 3   # equivalent to puz$guess(A = 3)
 puz$b <- 7   # equivalent to puz$guess(B = 7)}
 }
 
 \examples{
-puz <- MPuz$new()
+puz <- R6MPuz$new()
 
 # View current state as text
 puz$print()
@@ -204,7 +204,7 @@ size is controlled by \code{plt.cex}.
 \if{html}{\out{<a id="method-R6MPuz-initialize"></a>}}
 \if{latex}{\out{\hypertarget{method-R6MPuz-initialize}{}}}
 \subsection{\code{R6MPuz$new()}}{
-  Create a new \code{MPuz} object and generate an initial puzzle.
+  Create a new \code{R6MPuz} object and generate an initial puzzle.
 Arguments are forwarded to \code{$generate()}.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}

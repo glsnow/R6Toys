@@ -66,9 +66,9 @@ for(i in 1:10000) {
   tri_fractal$push(cur)
 }
 
-plot(tri_fractal$x, tri_fractal$y, pch = ".")
+plot(tri_fractal$x, tri_fractal$y, pch = ".", asp=1)
 plot(tri_fractal$x, tri_fractal$y, pch = ".", asp=1, 
-xlim = c(0, 0.1), ylim = c(0, 0.1))
+xlim = c(0, 0.2), ylim = c(0, 0.2))
 
 }
 \section{Public fields}{
