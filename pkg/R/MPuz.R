@@ -53,7 +53,7 @@ library(R6)
 #' puz$generate(autoprint = TRUE, autoplot = FALSE)
 #'
 #' @export
-MPuz <- R6Class("MPuz",
+R6MPuz <- R6Class("R6MPuz",
   public = list(
 
     #' @field autoprint Logical. If \code{TRUE}, the puzzle state is

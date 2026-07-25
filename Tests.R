@@ -260,7 +260,9 @@ r$print()
 
 ## interactive graphics ----
 
-dev.new()
+# open a graphics device that works with
+# getGraphicsEvent
+dev.new(width=6, height=3, noRStudioGD = TRUE) 
 r <- Robots$new(30)
 getGraphicsEvent(
   prompt='Ready',
