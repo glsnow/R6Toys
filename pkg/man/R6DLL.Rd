@@ -5,7 +5,7 @@
 \title{Doubly Linked List (R6)}
 \description{
 An R6 class that implements a doubly linked list (DLL). Each node stores an
-arbitrary R value and maintains forward and backward pointers, allowing
+arbitrary R object and maintains forward and backward pointers, allowing
 efficient insertion, removal, and bidirectional traversal without copying
 data.
 }
@@ -228,15 +228,26 @@ dll$toList()        # c(1, 2, 3)
 \section{Public fields}{
   \if{html}{\out{<div class="r6-fields">}}
   \describe{
-    \item{\code{length}}{Non-negative integer giving the number of nodes currently in
-the list.}
+    \item{\code{length}}{Non-negative integer giving the number of nodes currently
+in the list.}
 
     \item{\code{warn}}{Logical flag. When \code{TRUE}, operations that cannot be
-completed (e.g. popping from an empty list) emit an R \code{warning()}.
-Defaults to \code{FALSE}.}
+completed (e.g. popping from an empty list) emit an R
+\code{warning()}. Defaults to \code{FALSE}.}
 
-    \item{\code{found}}{Logical flag set by \code{iter_find()}. \code{TRUE} when the
-most recent search matched the current node; \code{FALSE} otherwise.}
+    \item{\code{found}}{Logical flag set by \code{iter_find()}. \code{TRUE} when
+the most recent search matched the current node; \code{FALSE}
+otherwise.}
+  }
+  \if{html}{\out{</div>}}
+}
+\section{Active bindings}{
+  \if{html}{\out{<div class="r6-active-bindings">}}
+  \describe{
+    \item{\code{finished}}{Read-only logical. \code{TRUE} when \code{current} is
+\code{NULL} (iterator not started or walked off an end);
+\code{FALSE} while \code{current} points to a valid node. Use as
+the loop condition with \code{iter_next()} or \code{iter_prev()}.}
   }
   \if{html}{\out{</div>}}
 }
@@ -267,10 +278,22 @@ most recent search matched the current node; \code{FALSE} otherwise.}
 \if{html}{\out{<a id="method-R6DLL-push"></a>}}
 \if{latex}{\out{\hypertarget{method-R6DLL-push}{}}}
 \subsection{\code{R6DLL$push()}}{
+  Append a value to the tail of the list. Equivalent to an
+\emph{enqueue} or stack \emph{push} operation.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{R6DLL$push(x)}
     \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{x}}{Value to append.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    The \code{R6DLL} object (invisibly).
   }
 }
 
@@ -278,10 +301,17 @@ most recent search matched the current node; \code{FALSE} otherwise.}
 \if{html}{\out{<a id="method-R6DLL-pop"></a>}}
 \if{latex}{\out{\hypertarget{method-R6DLL-pop}{}}}
 \subsection{\code{R6DLL$pop()}}{
+  Remove and return the value at the tail of the list. Equivalent to a
+stack \emph{pop}. If the removed node was also \code{current}, the
+iterator is reset to \code{NULL}.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{R6DLL$pop()}
     \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    The tail value, or \code{NULL} (with an optional warning) when
+  the list is empty.
   }
 }
 
@@ -289,10 +319,24 @@ most recent search matched the current node; \code{FALSE} otherwise.}
 \if{html}{\out{<a id="method-R6DLL-unshift"></a>}}
 \if{latex}{\out{\hypertarget{method-R6DLL-unshift}{}}}
 \subsection{\code{R6DLL$unshift()}}{
+  Prepend a value to the head of the list.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{R6DLL$unshift(x, iter_reset = FALSE)}
     \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{x}}{Value to prepend.}
+      \item{\code{iter_reset}}{Logical. If \code{TRUE}, the iterator's
+\code{current} pointer is moved to the newly created head node.
+Default \code{FALSE}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    The \code{R6DLL} object (invisibly).
   }
 }
 
@@ -300,10 +344,17 @@ most recent search matched the current node; \code{FALSE} otherwise.}
 \if{html}{\out{<a id="method-R6DLL-shift"></a>}}
 \if{latex}{\out{\hypertarget{method-R6DLL-shift}{}}}
 \subsection{\code{R6DLL$shift()}}{
+  Remove and return the value at the head of the list. Equivalent to a
+queue \emph{dequeue}. If the removed node was also \code{current}, the
+iterator is reset to \code{NULL}.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{R6DLL$shift()}
     \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    The head value, or \code{NULL} (with an optional warning) when
+  the list is empty.
   }
 }
 
@@ -311,10 +362,15 @@ most recent search matched the current node; \code{FALSE} otherwise.}
 \if{html}{\out{<a id="method-R6DLL-peek_first"></a>}}
 \if{latex}{\out{\hypertarget{method-R6DLL-peek_first}{}}}
 \subsection{\code{R6DLL$peek_first()}}{
+  Return the value of the head node without modifying the list.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{R6DLL$peek_first()}
     \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    The head value, or \code{NULL} with an optional warning when
+  the list is empty.
   }
 }
 
@@ -322,10 +378,15 @@ most recent search matched the current node; \code{FALSE} otherwise.}
 \if{html}{\out{<a id="method-R6DLL-peek_last"></a>}}
 \if{latex}{\out{\hypertarget{method-R6DLL-peek_last}{}}}
 \subsection{\code{R6DLL$peek_last()}}{
+  Return the value of the tail node without modifying the list.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{R6DLL$peek_last()}
     \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    The tail value, or \code{NULL} with an optional warning when
+  the list is empty.
   }
 }
 
@@ -333,10 +394,16 @@ most recent search matched the current node; \code{FALSE} otherwise.}
 \if{html}{\out{<a id="method-R6DLL-peek_current"></a>}}
 \if{latex}{\out{\hypertarget{method-R6DLL-peek_current}{}}}
 \subsection{\code{R6DLL$peek_current()}}{
+  Return the value of the current iterator node without modifying the
+list.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{R6DLL$peek_current()}
     \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    The current node's value, or \code{NULL} with an optional
+  warning when \code{current} is unset.
   }
 }
 
@@ -344,10 +411,16 @@ most recent search matched the current node; \code{FALSE} otherwise.}
 \if{html}{\out{<a id="method-R6DLL-peek_next"></a>}}
 \if{latex}{\out{\hypertarget{method-R6DLL-peek_next}{}}}
 \subsection{\code{R6DLL$peek_next()}}{
+  Return the value of the node immediately after \code{current}. If
+\code{current} is unset, returns the head node's value and optionally
+warns.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{R6DLL$peek_next()}
     \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    The next node's value.
   }
 }
 
@@ -355,10 +428,16 @@ most recent search matched the current node; \code{FALSE} otherwise.}
 \if{html}{\out{<a id="method-R6DLL-peek_prev"></a>}}
 \if{latex}{\out{\hypertarget{method-R6DLL-peek_prev}{}}}
 \subsection{\code{R6DLL$peek_prev()}}{
+  Return the value of the node immediately before \code{current}. If
+\code{current} is unset, returns the tail node's value and optionally
+warns.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{R6DLL$peek_prev()}
     \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    The previous node's value.
   }
 }
 
@@ -366,10 +445,29 @@ most recent search matched the current node; \code{FALSE} otherwise.}
 \if{html}{\out{<a id="method-R6DLL-iter_reset"></a>}}
 \if{latex}{\out{\hypertarget{method-R6DLL-iter_reset}{}}}
 \subsection{\code{R6DLL$iter_reset()}}{
+  Reset the iterator and set \code{self$found} to \code{FALSE}.
+\itemize{
+  \item \code{last = FALSE} (default) — positions \code{current} at the
+    head node.
+  \item \code{last = TRUE} — positions \code{current} at the tail node.
+  \item \code{last = NULL} or \code{last = NA} — sets \code{current} to
+    \code{NULL} (iterator unset).
+}
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{R6DLL$iter_reset(last = FALSE)}
     \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{last}}{Logical, \code{NULL}, or \code{NA}. Controls where the
+iterator is positioned; see Details. Default \code{FALSE}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    The \code{R6DLL} object (invisibly).
   }
 }
 
@@ -377,10 +475,17 @@ most recent search matched the current node; \code{FALSE} otherwise.}
 \if{html}{\out{<a id="method-R6DLL-iter_next"></a>}}
 \if{latex}{\out{\hypertarget{method-R6DLL-iter_next}{}}}
 \subsection{\code{R6DLL$iter_next()}}{
+  Advance \code{current} one step toward the tail. Sets
+\code{self$found} to \code{FALSE}. If \code{current} is unset, moves to
+the head node and optionally warns. When \code{current} passes the tail,
+it becomes \code{NULL} and \code{self$finished} returns \code{TRUE}.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{R6DLL$iter_next()}
     \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    The \code{R6DLL} object (invisibly).
   }
 }
 
@@ -388,10 +493,17 @@ most recent search matched the current node; \code{FALSE} otherwise.}
 \if{html}{\out{<a id="method-R6DLL-iter_prev"></a>}}
 \if{latex}{\out{\hypertarget{method-R6DLL-iter_prev}{}}}
 \subsection{\code{R6DLL$iter_prev()}}{
+  Move \code{current} one step toward the head. Sets \code{self$found}
+to \code{FALSE}. If \code{current} is unset, moves to the tail node
+and optionally warns. When \code{current} passes the head, it becomes
+\code{NULL} and \code{self$finished} returns \code{TRUE}.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{R6DLL$iter_prev()}
     \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    The \code{R6DLL} object (invisibly).
   }
 }
 
@@ -399,10 +511,26 @@ most recent search matched the current node; \code{FALSE} otherwise.}
 \if{html}{\out{<a id="method-R6DLL-iter_all"></a>}}
 \if{latex}{\out{\hypertarget{method-R6DLL-iter_all}{}}}
 \subsection{\code{R6DLL$iter_all()}}{
+  Apply a function to the value of every node in traversal order. The
+iterator's \code{current} position is saved and restored afterwards, so
+an in-progress iteration is not disturbed.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{R6DLL$iter_all(FUN = print, fromLast = FALSE)}
     \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{FUN}}{Function to apply to each node's value. Default
+\code{print}.}
+      \item{\code{fromLast}}{Logical. If \code{TRUE}, traverse from tail to head.
+Default \code{FALSE}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    The \code{R6DLL} object (invisibly).
   }
 }
 
@@ -410,10 +538,29 @@ most recent search matched the current node; \code{FALSE} otherwise.}
 \if{html}{\out{<a id="method-R6DLL-iter_find"></a>}}
 \if{latex}{\out{\hypertarget{method-R6DLL-iter_find}{}}}
 \subsection{\code{R6DLL$iter_find()}}{
+  Scan from \code{current} for the next node whose value satisfies a
+predicate. If \code{self$found} is already \code{TRUE} from a prior
+call, the search skips the current node, allowing repeated calls to
+step through all matching nodes. Sets \code{self$found = TRUE} on a
+match or \code{FALSE} if the iterator is exhausted.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{R6DLL$iter_find(FUN = function(x) TRUE, ..., fromLast = FALSE)}
     \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{FUN}}{Predicate function. Called as \code{FUN(value, ...)} for
+each node. Default \code{function(x) TRUE} (matches every node).}
+      \item{\code{...}}{Additional arguments forwarded to \code{FUN}.}
+      \item{\code{fromLast}}{Logical. If \code{TRUE}, scan toward the head instead
+of the tail. Default \code{FALSE}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    The \code{R6DLL} object (invisibly).
   }
 }
 
@@ -421,10 +568,33 @@ most recent search matched the current node; \code{FALSE} otherwise.}
 \if{html}{\out{<a id="method-R6DLL-insert"></a>}}
 \if{latex}{\out{\hypertarget{method-R6DLL-insert}{}}}
 \subsection{\code{R6DLL$insert()}}{
+  Insert a value adjacent to the current node.
+\itemize{
+  \item \code{loc = "after"} (default) — inserts immediately after
+    \code{current}. Delegates to \code{push()} when \code{current} is
+    the tail; inserts at the head (with optional warning) when
+    \code{current} is unset.
+  \item \code{loc = "before"} — inserts immediately before
+    \code{current}. Delegates to \code{unshift()} when \code{current}
+    is the head; appends to the tail (with optional warning) when
+    \code{current} is unset.
+}
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{R6DLL$insert(x, loc = c("after", "before"))}
     \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{x}}{Value to insert.}
+      \item{\code{loc}}{Character. One of \code{"after"} or \code{"before"}.
+Default \code{"after"}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    The \code{R6DLL} object (invisibly).
   }
 }
 
@@ -432,10 +602,18 @@ most recent search matched the current node; \code{FALSE} otherwise.}
 \if{html}{\out{<a id="method-R6DLL-remove"></a>}}
 \if{latex}{\out{\hypertarget{method-R6DLL-remove}{}}}
 \subsection{\code{R6DLL$remove()}}{
+  Remove the current node and return its value. After removal,
+\code{current} advances to the next node (or \code{NULL} when the
+removed node was the tail). Delegates to \code{shift()} or \code{pop()}
+when removing the head or tail.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{R6DLL$remove()}
     \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    The removed node's value, or \code{NULL} (with an optional
+  warning) when \code{current} is unset.
   }
 }
 
@@ -443,10 +621,24 @@ most recent search matched the current node; \code{FALSE} otherwise.}
 \if{html}{\out{<a id="method-R6DLL-swap"></a>}}
 \if{latex}{\out{\hypertarget{method-R6DLL-swap}{}}}
 \subsection{\code{R6DLL$swap()}}{
+  Swap the current node with an adjacent node in place (values are
+exchanged, not pointers). A no-op (with optional warnings) when
+\code{current} is unset or the requested neighbour does not exist.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{R6DLL$swap(loc = c("after", "before"))}
     \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{loc}}{Character. One of \code{"after"} (default) or
+\code{"before"}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    The \code{R6DLL} object (invisibly).
   }
 }
 
@@ -454,10 +646,30 @@ most recent search matched the current node; \code{FALSE} otherwise.}
 \if{html}{\out{<a id="method-R6DLL-toList"></a>}}
 \if{latex}{\out{\hypertarget{method-R6DLL-toList}{}}}
 \subsection{\code{R6DLL$toList()}}{
+  Collect all node values into an R object.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{R6DLL$toList(FUN = I, fromLast = FALSE, simplify = TRUE)}
     \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{FUN}}{Function applied to each node's value before collection.
+Default \code{I} (identity).}
+      \item{\code{fromLast}}{Logical. If \code{TRUE}, collect from tail to head.
+Default \code{FALSE}.}
+      \item{\code{simplify}}{Logical or function. Controls the return type:
+\code{TRUE} (default) uses \code{simplify2array()}; \code{FALSE}
+returns a plain \code{list}; a function is called via
+\code{do.call()} on the collected list.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A vector, array, list, or the result of \code{simplify()},
+  depending on the \code{simplify} argument. The iterator's
+  \code{current} position is restored after collection.
   }
 }
 

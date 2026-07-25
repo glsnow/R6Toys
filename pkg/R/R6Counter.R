@@ -1,6 +1,3 @@
-#' @importFrom R6 R6Class
-NULL
-
 #' Counter Object
 #'
 #' @description
@@ -55,6 +52,8 @@ NULL
 #' cnt$set(0)
 #' cnt$value        # 0
 #'
+#' cnt$inc()$inc(3)$dec(2) # chaining
+#' 
 #' @export
 R6Counter <- R6Class("R6Counter",
   public = list(

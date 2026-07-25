@@ -2,7 +2,7 @@
 #'
 #' @description
 #' An R6 class that implements a doubly linked list (DLL). Each node stores an
-#' arbitrary R value and maintains forward and backward pointers, allowing
+#' arbitrary R object and maintains forward and backward pointers, allowing
 #' efficient insertion, removal, and bidirectional traversal without copying
 #' data.
 #'
@@ -17,14 +17,6 @@
 #' managed via the \code{iter_*} family of methods. The active binding
 #' \code{finished} signals when the iterator has walked off either end of the
 #' list.
-#'
-#' @field length Non-negative integer giving the number of nodes currently in
-#'   the list.
-#' @field warn Logical flag. When \code{TRUE}, operations that cannot be
-#'   completed (e.g. popping from an empty list) emit an R \code{warning()}.
-#'   Defaults to \code{FALSE}.
-#' @field found Logical flag set by \code{iter_find()}. \code{TRUE} when the
-#'   most recent search matched the current node; \code{FALSE} otherwise.
 #'
 #' @section Stack and queue operations:
 #' \describe{
@@ -192,7 +184,7 @@
 #'     condition with \code{iter_next()} or \code{iter_prev()}.
 #'   }
 #' }
-#' 
+#'
 #' @examples
 #' dll <- R6DLL$new()
 #'
@@ -220,378 +212,475 @@
 #' @export
 #' @importFrom R6 R6Class
 R6DLL <- R6Class("R6DLL",
-                 public = list(length = 0, warn = FALSE,
-                               found = FALSE),
-                 private = list(first = NULL, last = NULL,
-                                current = NULL),
-                 cloneable = FALSE
+  cloneable = FALSE,
+  public = list(
+
+    #' @field length Non-negative integer giving the number of nodes currently
+    #'   in the list.
+    length = 0,
+
+    #' @field warn Logical flag. When \code{TRUE}, operations that cannot be
+    #'   completed (e.g. popping from an empty list) emit an R
+    #'   \code{warning()}. Defaults to \code{FALSE}.
+    warn = FALSE,
+
+    #' @field found Logical flag set by \code{iter_find()}. \code{TRUE} when
+    #'   the most recent search matched the current node; \code{FALSE}
+    #'   otherwise.
+    found = FALSE,
+
+    #' @description
+    #' Append a value to the tail of the list. Equivalent to an
+    #' \emph{enqueue} or stack \emph{push} operation.
+    #' @param x Value to append.
+    #' @return The \code{R6DLL} object (invisibly).
+    push = function(x) {
+      node <- new.env(hash = FALSE, parent = emptyenv())
+      node$value <- x
+      node$prv <- node$nxt <- NULL
+      if (is.null(private$last)) {
+        private$first <- private$last <- node
+      } else {
+        node$prv <- private$last
+        private$last$nxt <- node
+        private$last <- node
+      }
+      self$length <- self$length + 1
+      return(invisible(self))
+    },
+
+    #' @description
+    #' Remove and return the value at the tail of the list. Equivalent to a
+    #' stack \emph{pop}. If the removed node was also \code{current}, the
+    #' iterator is reset to \code{NULL}.
+    #' @return The tail value, or \code{NULL} (with an optional warning) when
+    #'   the list is empty.
+    pop = function() {
+      if (is.null(private$last)) {
+        if (self$warn) warning("DLL is empty, nothing to pop.")
+        return(NULL)
+      }
+      node <- private$last
+      if (is.null(node$prv)) {
+        private$first <- private$last <- private$current <- NULL
+      } else {
+        if (identical(private$current, node)) {
+          private$current <- NULL
+        }
+        private$last <- node$prv
+        private$last$nxt <- NULL
+      }
+      node$prv <- node$nxt <- NULL
+      self$length <- self$length - 1
+      return(node$value)
+    },
+
+    #' @description
+    #' Prepend a value to the head of the list.
+    #' @param x Value to prepend.
+    #' @param iter_reset Logical. If \code{TRUE}, the iterator's
+    #'   \code{current} pointer is moved to the newly created head node.
+    #'   Default \code{FALSE}.
+    #' @return The \code{R6DLL} object (invisibly).
+    unshift = function(x, iter_reset = FALSE) {
+      node <- new.env(hash = FALSE, parent = emptyenv())
+      node$value <- x
+      node$prv <- node$nxt <- NULL
+      if (is.null(private$first)) {
+        private$first <- private$last <- private$current <- node
+      } else {
+        node$nxt <- private$first
+        private$first$prv <- node
+        private$first <- node
+      }
+      if (iter_reset) {
+        private$current <- node
+      }
+      self$length <- self$length + 1
+      return(invisible(self))
+    },
+
+    #' @description
+    #' Remove and return the value at the head of the list. Equivalent to a
+    #' queue \emph{dequeue}. If the removed node was also \code{current}, the
+    #' iterator is reset to \code{NULL}.
+    #' @return The head value, or \code{NULL} (with an optional warning) when
+    #'   the list is empty.
+    shift = function() {
+      if (is.null(private$first)) {
+        if (self$warn) warning("Empty DLL, nothing to shift.")
+        return(NULL)
+      }
+      node <- private$first
+      if (is.null(node$nxt)) {
+        private$first <- private$last <- private$current <- NULL
+      } else {
+        if (identical(private$current, node)) {
+          private$current <- NULL
+        }
+        private$first <- node$nxt
+        private$first$prv <- NULL
+      }
+      node$prv <- node$nxt <- NULL
+      self$length <- self$length - 1
+      return(node$value)
+    },
+
+    #' @description
+    #' Return the value of the head node without modifying the list.
+    #' @return The head value, or \code{NULL} with an optional warning when
+    #'   the list is empty.
+    peek_first = function() {
+      if (is.null(private$first) && self$warn) warning("Empty DLL, nothing to peek.")
+      private$first$value
+    },
+
+    #' @description
+    #' Return the value of the tail node without modifying the list.
+    #' @return The tail value, or \code{NULL} with an optional warning when
+    #'   the list is empty.
+    peek_last = function() {
+      if (is.null(private$last) && self$warn) warning("Empty DLL, nothing to peek.")
+      private$last$value
+    },
+
+    #' @description
+    #' Return the value of the current iterator node without modifying the
+    #' list.
+    #' @return The current node's value, or \code{NULL} with an optional
+    #'   warning when \code{current} is unset.
+    peek_current = function() {
+      if (is.null(private$current) && self$warn) warning("Current node not set, nothing to peek.")
+      private$current$value
+    },
+
+    #' @description
+    #' Return the value of the node immediately after \code{current}. If
+    #' \code{current} is unset, returns the head node's value and optionally
+    #' warns.
+    #' @return The next node's value.
+    peek_next = function() {
+      if (is.null(private$current)) {
+        if (self$warn) warning("Current unset, peeking at first.")
+        return(private$first$value)
+      }
+      private$current$nxt$value
+    },
+
+    #' @description
+    #' Return the value of the node immediately before \code{current}. If
+    #' \code{current} is unset, returns the tail node's value and optionally
+    #' warns.
+    #' @return The previous node's value.
+    peek_prev = function() {
+      if (is.null(private$current)) {
+        if (self$warn) warning("Current unset, peeking at last.")
+        return(private$last$value)
+      }
+      private$current$prv$value
+    },
+
+    #' @description
+    #' Reset the iterator and set \code{self$found} to \code{FALSE}.
+    #' \itemize{
+    #'   \item \code{last = FALSE} (default) — positions \code{current} at the
+    #'     head node.
+    #'   \item \code{last = TRUE} — positions \code{current} at the tail node.
+    #'   \item \code{last = NULL} or \code{last = NA} — sets \code{current} to
+    #'     \code{NULL} (iterator unset).
+    #' }
+    #' @param last Logical, \code{NULL}, or \code{NA}. Controls where the
+    #'   iterator is positioned; see Details. Default \code{FALSE}.
+    #' @return The \code{R6DLL} object (invisibly).
+    iter_reset = function(last = FALSE) {
+      self$found <- FALSE
+      if (is.null(last) || is.na(last)) {
+        private$current <- NULL
+      } else if (last) {
+        private$current <- private$last
+      } else {
+        private$current <- private$first
+      }
+      return(invisible(self))
+    },
+
+    #' @description
+    #' Advance \code{current} one step toward the tail. Sets
+    #' \code{self$found} to \code{FALSE}. If \code{current} is unset, moves to
+    #' the head node and optionally warns. When \code{current} passes the tail,
+    #' it becomes \code{NULL} and \code{self$finished} returns \code{TRUE}.
+    #' @return The \code{R6DLL} object (invisibly).
+    iter_next = function() {
+      self$found <- FALSE
+      if (is.null(private$current)) {
+        if (self$warn) warning("Current was unset, moving to first.")
+        private$current <- private$first
+      } else {
+        private$current <- private$current$nxt
+      }
+      return(invisible(self))
+    },
+
+    #' @description
+    #' Move \code{current} one step toward the head. Sets \code{self$found}
+    #' to \code{FALSE}. If \code{current} is unset, moves to the tail node
+    #' and optionally warns. When \code{current} passes the head, it becomes
+    #' \code{NULL} and \code{self$finished} returns \code{TRUE}.
+    #' @return The \code{R6DLL} object (invisibly).
+    iter_prev = function() {
+      self$found <- FALSE
+      if (is.null(private$current)) {
+        if (self$warn) warning("Current was unset, moving to last.")
+        private$current <- private$last
+      } else {
+        private$current <- private$current$prv
+      }
+      return(invisible(self))
+    },
+
+    #' @description
+    #' Apply a function to the value of every node in traversal order. The
+    #' iterator's \code{current} position is saved and restored afterwards, so
+    #' an in-progress iteration is not disturbed.
+    #' @param FUN Function to apply to each node's value. Default
+    #'   \code{print}.
+    #' @param fromLast Logical. If \code{TRUE}, traverse from tail to head.
+    #'   Default \code{FALSE}.
+    #' @return The \code{R6DLL} object (invisibly).
+    iter_all = function(FUN = print, fromLast = FALSE) {
+      cn <- private$current
+      if (fromLast) {
+        self$iter_reset(last = TRUE)
+        while (!self$finished) {
+          FUN(private$current$value)
+          self$iter_prev()
+        }
+      } else {
+        self$iter_reset(last = FALSE)
+        while (!self$finished) {
+          FUN(private$current$value)
+          self$iter_next()
+        }
+      }
+      private$current <- cn
+      return(invisible(self))
+    },
+
+    #' @description
+    #' Scan from \code{current} for the next node whose value satisfies a
+    #' predicate. If \code{self$found} is already \code{TRUE} from a prior
+    #' call, the search skips the current node, allowing repeated calls to
+    #' step through all matching nodes. Sets \code{self$found = TRUE} on a
+    #' match or \code{FALSE} if the iterator is exhausted.
+    #' @param FUN Predicate function. Called as \code{FUN(value, ...)} for
+    #'   each node. Default \code{function(x) TRUE} (matches every node).
+    #' @param ... Additional arguments forwarded to \code{FUN}.
+    #' @param fromLast Logical. If \code{TRUE}, scan toward the head instead
+    #'   of the tail. Default \code{FALSE}.
+    #' @return The \code{R6DLL} object (invisibly).
+    iter_find = function(FUN = function(x) TRUE, ..., fromLast = FALSE) {
+      if (is.null(private$current)) {
+        self$iter_reset(last = fromLast)
+      }
+      if (self$found) {
+        if (fromLast) {
+          self$iter_prev()
+        } else {
+          self$iter_next()
+        }
+      }
+      while (!self$finished) {
+        if (FUN(private$current$value, ...)) {
+          self$found <- TRUE
+          break
+        }
+        if (fromLast) {
+          self$iter_prev()
+        } else {
+          self$iter_next()
+        }
+      }
+      return(invisible(self))
+    },
+
+    #' @description
+    #' Insert a value adjacent to the current node.
+    #' \itemize{
+    #'   \item \code{loc = "after"} (default) — inserts immediately after
+    #'     \code{current}. Delegates to \code{push()} when \code{current} is
+    #'     the tail; inserts at the head (with optional warning) when
+    #'     \code{current} is unset.
+    #'   \item \code{loc = "before"} — inserts immediately before
+    #'     \code{current}. Delegates to \code{unshift()} when \code{current}
+    #'     is the head; appends to the tail (with optional warning) when
+    #'     \code{current} is unset.
+    #' }
+    #' @param x Value to insert.
+    #' @param loc Character. One of \code{"after"} or \code{"before"}.
+    #'   Default \code{"after"}.
+    #' @return The \code{R6DLL} object (invisibly).
+    insert = function(x, loc = c("after", "before")) {
+      loc <- match.arg(loc)
+      if (is.null(private$current)) {
+        if (self$warn) warning("No current node, inserting at ",
+                               ifelse(loc == "after", "start", "end"), ".")
+        if (loc == "after") {
+          self$unshift(x)
+        } else {
+          self$push(x)
+        }
+      } else {
+        if (loc == "after") {
+          if (is.null(private$current$nxt)) {
+            self$push(x)
+          } else {
+            node <- new.env(hash = FALSE, parent = emptyenv())
+            node$value <- x
+            node$prv <- private$current
+            node$nxt <- private$current$nxt
+            private$current$nxt$prv <- node
+            private$current$nxt <- node
+            self$length <- self$length + 1
+          }
+        } else {
+          if (is.null(private$current$prv)) {
+            self$unshift(x)
+          } else {
+            node <- new.env(hash = FALSE, parent = emptyenv())
+            node$value <- x
+            node$prv <- private$current$prv
+            node$nxt <- private$current
+            private$current$prv$nxt <- node
+            private$current$prv <- node
+            self$length <- self$length + 1
+          }
+        }
+      }
+      return(invisible(self))
+    },
+
+    #' @description
+    #' Remove the current node and return its value. After removal,
+    #' \code{current} advances to the next node (or \code{NULL} when the
+    #' removed node was the tail). Delegates to \code{shift()} or \code{pop()}
+    #' when removing the head or tail.
+    #' @return The removed node's value, or \code{NULL} (with an optional
+    #'   warning) when \code{current} is unset.
+    remove = function() {
+      if (is.null(private$current)) {
+        if (self$warn) warning("No current node to remove.")
+        return(NULL)
+      }
+      self$found <- FALSE
+      if (identical(private$current, private$first)) {
+        self$shift()
+      } else if (identical(private$current, private$last)) {
+        self$pop()
+      } else {
+        node <- private$current
+        node$prv$nxt <- node$nxt
+        node$nxt$prv <- node$prv
+        private$current <- node$nxt
+        node$prv <- node$nxt <- NULL
+        self$length <- self$length - 1
+        return(node$value)
+      }
+    },
+
+    #' @description
+    #' Swap the current node with an adjacent node in place (values are
+    #' exchanged, not pointers). A no-op (with optional warnings) when
+    #' \code{current} is unset or the requested neighbour does not exist.
+    #' @param loc Character. One of \code{"after"} (default) or
+    #'   \code{"before"}.
+    #' @return The \code{R6DLL} object (invisibly).
+    swap = function(loc = c("after", "before")) {
+      if (is.null(private$current)) {
+        if (self$warn) warning("No current node, no swap is being made.")
+        return(invisible(self))
+      }
+      loc <- match.arg(loc)
+      if (loc == "after") {
+        if (is.null(private$current$nxt)) {
+          if (self$warn) warning("No node after the current one, no swap is being made.")
+          return(invisible(self))
+        }
+        tmpnode  <- private$current$nxt
+        tmpnode2 <- self$remove()
+        private$current <- tmpnode
+        self$insert(tmpnode2, "after")
+      } else {
+        if (is.null(private$current$prv)) {
+          if (self$warn) warning("No node before the current one, no swap is being made.")
+          return(invisible(self))
+        }
+        tmpnode  <- private$current$prv
+        tmpnode2 <- self$remove()
+        private$current <- tmpnode
+        self$insert(tmpnode2, "before")
+      }
+    },
+
+    #' @description
+    #' Collect all node values into an R object.
+    #' @param FUN Function applied to each node's value before collection.
+    #'   Default \code{I} (identity).
+    #' @param fromLast Logical. If \code{TRUE}, collect from tail to head.
+    #'   Default \code{FALSE}.
+    #' @param simplify Logical or function. Controls the return type:
+    #'   \code{TRUE} (default) uses \code{simplify2array()}; \code{FALSE}
+    #'   returns a plain \code{list}; a function is called via
+    #'   \code{do.call()} on the collected list.
+    #' @return A vector, array, list, or the result of \code{simplify()},
+    #'   depending on the \code{simplify} argument. The iterator's
+    #'   \code{current} position is restored after collection.
+    toList = function(FUN = I, fromLast = FALSE, simplify = TRUE) {
+      cn  <- private$current
+      out <- vector("list", self$length)
+      tmp <- R6Counter$new()
+      if (fromLast) {
+        self$iter_reset(last = TRUE)
+        while (!self$finished) {
+          out[[tmp$pp]] <- FUN(private$current$value)
+          self$iter_prev()
+        }
+      } else {
+        self$iter_reset(last = FALSE)
+        while (!self$finished) {
+          out[[tmp$pp]] <- FUN(private$current$value)
+          self$iter_next()
+        }
+      }
+      private$current <- cn
+      if (is.function(simplify)) {
+        return(do.call(simplify, out))
+      } else if (simplify) {
+        return(simplify2array(out))
+      } else {
+        return(out)
+      }
+    }
+  ),
+  private = list(
+    first   = NULL,
+    last    = NULL,
+    current = NULL,
+
+    # Walk the list and drop all nodes to allow garbage collection.
+    finalize = function() {
+      while (!is.null(private$last)) {
+        self$pop()
+      }
+    }
+  ),
+  active = list(
+
+    #' @field finished Read-only logical. \code{TRUE} when \code{current} is
+    #'   \code{NULL} (iterator not started or walked off an end);
+    #'   \code{FALSE} while \code{current} points to a valid node. Use as
+    #'   the loop condition with \code{iter_next()} or \code{iter_prev()}.
+    finished = function() {
+      is.null(private$current)
+    }
+  )
 )
-
-## push ----
-
-#' @rdname R6DLL
-R6DLL$set("public", "push", function(x) {
-  node <- new.env(hash = FALSE, parent = emptyenv())
-  node$value <- x
-  node$prv <- node$nxt <- NULL
-  if (is.null(private$last)) {
-    private$first <- private$last <- node
-  } else {
-    node$prv <- private$last
-    private$last$nxt <- node
-    private$last <- node
-  }
-  self$length <- self$length + 1
-  return(invisible(self))
-})
-
-## pop ----
-
-#' @rdname R6DLL
-R6DLL$set("public", "pop", function() {
-  if (is.null(private$last)) {
-    if (self$warn) warning("DLL is empty, nothing to pop.")
-    return(NULL)
-  }
-  node <- private$last
-  if (is.null(node$prv)) {
-    private$first <- private$last <- private$current <- NULL
-  } else {
-    if (identical(private$current, node)) {
-      private$current <- NULL
-    }
-    private$last <- node$prv
-    private$last$nxt <- NULL
-  }
-  node$prv <- node$nxt <- NULL
-  self$length <- self$length - 1
-  return(node$value)
-})
-
-## unshift ----
-
-#' @rdname R6DLL
-R6DLL$set("public", "unshift", function(x, iter_reset = FALSE) {
-  node <- new.env(hash = FALSE, parent = emptyenv())
-  node$value <- x
-  node$prv <- node$nxt <- NULL
-  if (is.null(private$first)) {
-    private$first <- private$last <- private$current <- node
-  } else {
-    node$nxt <- private$first
-    private$first$prv <- node
-    private$first <- node
-  }
-  if (iter_reset) {
-    private$current <- node
-  }
-  self$length <- self$length + 1
-  return(invisible(self))
-})
-
-## shift ----
-
-#' @rdname R6DLL
-R6DLL$set("public", "shift", function() {
-  if (is.null(private$first)) {
-    if (self$warn) warning("Empty DLL, nothing to shift.")
-    return(NULL)
-  }
-  node <- private$first
-  if (is.null(node$nxt)) {
-    private$first <- private$last <- private$current <- NULL
-  } else {
-    if (identical(private$current, node)) {
-      private$current <- NULL
-    }
-    private$first <- node$nxt
-    private$first$prv <- NULL
-  }
-  node$prv <- node$nxt <- NULL
-  self$length <- self$length - 1
-  return(node$value)
-})
-
-## finalize ----
-
-R6DLL$set("private", "finalize", function() {
-  while (!is.null(private$last)) {
-    self$pop()
-  }
-})
-
-## peek_first ----
-
-#' @rdname R6DLL
-R6DLL$set("public", "peek_first", function() {
-  if (is.null(private$first) && self$warn) warning("Empty DLL, nothing to peek.")
-  private$first$value
-})
-
-## peek_last ----
-
-#' @rdname R6DLL
-R6DLL$set("public", "peek_last", function() {
-  if (is.null(private$last) && self$warn) warning("Empty DLL, nothing to peek.")
-  private$last$value
-})
-
-## peek_current ----
-
-#' @rdname R6DLL
-R6DLL$set("public", "peek_current", function() {
-  if (is.null(private$current) && self$warn) warning("Current Node not set, nothing to peek.")
-  private$current$value
-})
-
-## peek_next ----
-
-#' @rdname R6DLL
-R6DLL$set("public", "peek_next", function() {
-  if (is.null(private$current)) {
-    if (self$warn) warning("Current unset, peeking at first.")
-    return(private$first$value)
-  }
-  private$current$nxt$value
-})
-
-## peek_prev ----
-
-#' @rdname R6DLL
-R6DLL$set("public", "peek_prev", function() {
-  if (is.null(private$current)) {
-    if (self$warn) warning("Current unset, peeking at last.")
-    return(private$last$value)
-  }
-  private$current$prv$value
-})
-
-## iter_reset ----
-
-#' @rdname R6DLL
-R6DLL$set("public", "iter_reset", function(last = FALSE) {
-  self$found <- FALSE
-  if (is.null(last) || is.na(last)) {
-    private$current <- NULL
-  } else if (last) {
-    private$current <- private$last
-  } else {
-    private$current <- private$first
-  }
-  return(invisible(self))
-})
-
-## iter_next ----
-
-#' @rdname R6DLL
-R6DLL$set("public", "iter_next", function() {
-  self$found <- FALSE
-  if (is.null(private$current)) {
-    if (self$warn) warning('Current was unset, moving to first.')
-    private$current <- private$first
-  } else {
-    private$current <- private$current$nxt
-  }
-  return(invisible(self))
-})
-
-## iter_prev ----
-
-#' @rdname R6DLL
-R6DLL$set("public", "iter_prev", function() {
-  self$found <- FALSE
-  if (is.null(private$current)) {
-    if (self$warn) warning('Current was unset, moving to last.')
-    private$current <- private$last
-  } else {
-    private$current <- private$current$prv
-  }
-  return(invisible(self))
-})
-
-## iter_all ----
-
-#' @rdname R6DLL
-R6DLL$set("public", "iter_all", function(FUN = print, fromLast = FALSE) {
-  cn <- private$current
-  if (fromLast) {
-    self$iter_reset(last = TRUE)
-    while (!self$finished) {
-      FUN(private$current$value)
-      self$iter_prev()
-    }
-  } else {
-    self$iter_reset(last = FALSE)
-    while (!self$finished) {
-      FUN(private$current$value)
-      self$iter_next()
-    }
-  }
-  private$current <- cn
-  return(invisible(self))
-})
-
-## iter_find ----
-
-#' @rdname R6DLL
-R6DLL$set("public", "iter_find", function(FUN = function(x) TRUE, ..., fromLast = FALSE) {
-  if (is.null(private$current)) {
-    self$iter_reset(last = fromLast)
-  }
-  if (self$found) {
-    if (fromLast) {
-      self$iter_prev()
-    } else {
-      self$iter_next()
-    }
-  }
-  while (!self$finished) {
-    if (FUN(private$current$value, ...)) {
-      self$found <- TRUE
-      break
-    }
-    if (fromLast) {
-      self$iter_prev()
-    } else {
-      self$iter_next()
-    }
-  }
-  return(invisible(self))
-})
-
-## finished ----
-
-#' @rdname R6DLL
-R6DLL$set("active", "finished", function() {
-  is.null(private$current)
-})
-
-## insert ----
-
-#' @rdname R6DLL
-R6DLL$set("public", "insert", function(x, loc = c('after', 'before')) {
-  loc <- match.arg(loc)
-  if (is.null(private$current)) {
-    if (self$warn) warning("No current node, inserting at ",
-                           ifelse(loc == 'after', 'start', 'end'), ".")
-    if (loc == 'after') {
-      self$unshift(x)
-    } else {
-      self$push(x)
-    }
-  } else {
-    if (loc == 'after') {
-      if (is.null(private$current$nxt)) {
-        self$push(x)
-      } else {
-        node <- new.env(hash = FALSE, parent = emptyenv())
-        node$value <- x
-        node$prv <- private$current
-        node$nxt <- private$current$nxt
-        private$current$nxt$prv <- node
-        private$current$nxt <- node
-        self$length <- self$length + 1
-      }
-    } else { # loc == 'before'
-      if (is.null(private$current$prv)) {
-        self$unshift(x)
-      } else {
-        node <- new.env(hash = FALSE, parent = emptyenv())
-        node$value <- x
-        node$prv <- private$current$prv
-        node$nxt <- private$current
-        private$current$prv$nxt <- node
-        private$current$prv <- node
-        self$length <- self$length + 1
-      }
-    }
-  }
-  return(invisible(self))
-})
-
-## remove ----
-
-#' @rdname R6DLL
-R6DLL$set("public", "remove", function() {
-  if (is.null(private$current)) {
-    if (self$warn) warning("No Current Node to remove.")
-    return(NULL)
-  }
-  self$found <- FALSE
-  if (identical(private$current, private$first)) {
-    self$shift()
-  } else if (identical(private$current, private$last)) {
-    self$pop()
-  } else {
-    node <- private$current
-    node$prv$nxt <- node$nxt
-    node$nxt$prv <- node$prv
-    private$current <- node$nxt
-    node$prv <- node$nxt <- NULL
-    self$length <- self$length - 1
-    return(node$value)
-  }
-})
-
-## swap ----
-
-#' @rdname R6DLL
-R6DLL$set("public", "swap", function(loc = c('after', 'before')) {
-  if (is.null(private$current)) {
-    if (self$warn) warning("No current node, no swap is being made.")
-    return(invisible(self))
-  }
-  loc <- match.arg(loc)
-  if (loc == 'after') {
-    if (is.null(private$current$nxt)) {
-      if (self$warn) warning("No node after the current one, no swap is being made.")
-      return(invisible(self))
-    }
-    tmpnode <- private$current$nxt
-    tmpnode2 <- self$remove()
-    private$current <- tmpnode
-    self$insert(tmpnode2, 'after')
-  } else { # before
-    if (is.null(private$current$prv)) {
-      if (self$warn) warning("No node before the current one, no swap is being made.")
-      return(invisible(self))
-    }
-    tmpnode <- private$current$prv
-    tmpnode2 <- self$remove()
-    private$current <- tmpnode
-    self$insert(tmpnode2, 'before')
-  }
-})
-
-## toList ----
-
-#' @rdname R6DLL
-R6DLL$set("public", "toList", function(FUN = I, fromLast = FALSE,
-                                       simplify = TRUE) {
-  cn <- private$current
-  out <- vector("list", self$length)
-  tmp <- R6Counter$new()
-  if (fromLast) {
-    self$iter_reset(last = TRUE)
-    while (!self$finished) {
-      out[[tmp$pp]] <- FUN(private$current$value)
-      self$iter_prev()
-    }
-  } else {
-    self$iter_reset(last = FALSE)
-    while (!self$finished) {
-      out[[tmp$pp]] <- FUN(private$current$value)
-      self$iter_next()
-    }
-  }
-  private$current <- cn
-  if (is.function(simplify)) {
-    return(do.call(simplify, out))
-  } else if (simplify) {
-    return(simplify2array(out))
-  } else {
-    return(out)
-  }
-})
-
-

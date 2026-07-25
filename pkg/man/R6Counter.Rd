@@ -57,6 +57,8 @@ cnt$mmm          # returns 9, then decrements to 8
 cnt$set(0)
 cnt$value        # 0
 
+cnt$inc()$inc(3)$dec(2) # chaining
+
 }
 \section{Public fields}{
   \if{html}{\out{<div class="r6-fields">}}

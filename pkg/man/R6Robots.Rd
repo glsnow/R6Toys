@@ -10,66 +10,50 @@ of robots. On each turn the player moves one step (or teleports), and
 every robot then takes one step directly towards the player. Robots
 that collide with each other (or with a previously formed junk pile)
 are destroyed and turn into a junk pile. The player loses if a robot
-moves onto the player's square; the player wins once every robot has
+moves onto the player's square or if the player colides with a junk pile; 
+the player wins once every robot has
 been destroyed.
 }
 \details{
 The game board has \code{ncol} columns and \code{nrow} rows. Positions
-are stored as two-column matrices of \code{(x, y)} coordinates, where
-\code{x} runs from 1 to \code{ncol} and \code{y} runs from 1 to
-\code{nrow}.
+are stored as two-column matrices of \code{(x, y)} coordinates.
 }
-\section{Methods}{
-
-\describe{
-  \item{\code{initialize(nrobots = 10, nrow = 20, ncol = 50, auto.print = FALSE, auto.plot = TRUE)}}{
-    Creates a new game. Places the player at the center of the board and
-    scatters \code{nrobots} robots at random, non-overlapping locations.
-    \itemize{
-      \item \code{nrobots}: number of robots to create.
-      \item \code{nrow}, \code{ncol}: dimensions of the game board.
-      \item \code{auto.print}: whether to call \code{print()} automatically
-        after each move.
-      \item \code{auto.plot}: whether to call \code{plot()} automatically
-        after each move.
-    }
-  }
-  \item{\code{plot()}}{
-    Draws the current board state using base graphics: a checkerboard
-    background, and points for the player, corpse, robots, and junk
-    piles. Displays a warning title if a robot is within one move of the
-    player.
-  }
-  \item{\code{print()}}{
-    Prints an ASCII-art representation of the current board state to the
-    console, bordered by \code{-} and \code{|} characters. Prints a
-    warning message if a robot is within one move of the player.
-  }
-  \item{\code{move(dir)}}{
-    Advances the game by one turn.
-    \itemize{
-      \item \code{dir}: a direction string, one of \code{"N"}, \code{"NE"},
-        \code{"E"}, \code{"SE"}, \code{"S"}, \code{"SW"}, \code{"W"},
-        \code{"NW"}, \code{"."} (stay put), or \code{"T"} (teleport to a
-        random square). A direction may be followed by a number of steps,
-        e.g. \code{"N3"} to move north three times in succession. These
-        can be changed by changing the \code{move.mat} field.
-    }
-    The player is moved first, then every robot takes one step towards
-    the player's new position. Colliding robots become junk piles, and
-    any robot landing on the player ends the game. If \code{auto.print}
-    or \code{auto.plot} is \code{TRUE}, the board is redrawn after the
-    move.
-  }
+\note{
+The \code{move} method does not return the object invisibly like
+other R6 objects (for chaining purposes), the return value is
+compatible with the \code{getGraphicsEvent} functions.
 }
-}
-
 \examples{
 \dontrun{
 g <- Robots$new(nrobots = 10)
 g$move("N")
 g$move("SE2")
 g$move("T")
+
+
+## interactive graphics ----
+
+# open a graphics device that works with
+# getGraphicsEvent
+dev.new(width=6, height=3, noRStudioGD = TRUE) 
+r <- Robots$new(30)
+getGraphicsEvent(
+  prompt='Ready',
+  onKeybd=function(A){
+    switch(A,
+           q=r$move('nw'),
+           w=r$move('n'),
+           e=r$move('ne'),
+           a=r$move('w'),
+           s=r$move('.'),
+           d=r$move('e'),
+           z=r$move('sw'),
+           x=r$move('s'),
+           c=r$move('se'),
+           t=r$move('t'),
+           ' '=r$move('.'))
+  }
+)
 }
 
 }
@@ -80,59 +64,64 @@ g$move("T")
 
     \item{\code{ncol}}{Number of columns on the game board.}
 
-    \item{\code{player}}{A one-row, two-column matrix giving the player's current
-\code{(x, y)} position. Becomes a zero-row matrix once the player has
-been destroyed by a robot.}
+    \item{\code{player}}{A one-row, two-column matrix giving the player's
+current \code{(x, y)} position. Becomes a zero-row matrix once
+the player has been destroyed by a robot.}
 
-    \item{\code{corpse}}{A one-row, two-column matrix giving the \code{(x, y)}
-position at which the player was destroyed, used for plotting/printing
-after a loss. \code{NA} while the player is alive.}
+    \item{\code{corpse}}{A one-row, two-column matrix giving the
+\code{(x, y)} position at which the player was destroyed, used
+for plotting/printing after a loss. \code{NA} while the player
+is alive.}
 
-    \item{\code{robots}}{A two-column matrix with one row per living robot, giving
-each robot's current \code{(x, y)} position.}
+    \item{\code{robots}}{A two-column matrix with one row per living robot,
+giving each robot's current \code{(x, y)} position.}
 
-    \item{\code{piles}}{A two-column matrix with one row per junk pile, giving
-each pile's \code{(x, y)} position. Junk piles are formed where two
-or more robots collide, and are treated as obstacles that also
-destroy any robot that runs into them.}
+    \item{\code{piles}}{A two-column matrix with one row per junk pile,
+giving each pile's \code{(x, y)} position. Junk piles are
+formed where two or more robots collide, and are treated as
+obstacles that also destroy any robot that runs into them.}
 
-    \item{\code{robot.pch}}{Plotting character (\code{pch}) used to draw robots
-when \code{plot()} is called.}
+    \item{\code{robot.pch}}{Plotting character (\code{pch}) used to draw
+robots when \code{plot()} is called.}
 
-    \item{\code{player.pch}}{Plotting character (\code{pch}) used to draw the
-player when \code{plot()} is called.}
+    \item{\code{player.pch}}{Plotting character (\code{pch}) used to draw
+the player when \code{plot()} is called.}
 
-    \item{\code{pile.pch}}{Plotting character (\code{pch}) used to draw junk piles
-when \code{plot()} is called.}
+    \item{\code{pile.pch}}{Plotting character (\code{pch}) used to draw
+junk piles when \code{plot()} is called.}
 
-    \item{\code{robot.char}}{Single character used to represent a robot when
-\code{print()} is called.}
+    \item{\code{robot.char}}{Single character used to represent a robot
+when \code{print()} is called.}
 
-    \item{\code{player.char}}{Single character used to represent the player when
-\code{print()} is called.}
+    \item{\code{player.char}}{Single character used to represent the
+player when \code{print()} is called.}
 
-    \item{\code{pile.char}}{Single character used to represent a junk pile when
-\code{print()} is called.}
+    \item{\code{pile.char}}{Single character used to represent a junk pile
+when \code{print()} is called.}
 
-    \item{\code{corpse.char}}{Single character used to represent the player's
-corpse when \code{print()} is called.}
+    \item{\code{corpse.char}}{Single character used to represent the
+player's corpse when \code{print()} is called.}
 
-    \item{\code{auto.plot}}{Logical. If \code{TRUE}, \code{plot()} is called
-automatically after \code{initialize()} and after every \code{move()}.}
+    \item{\code{auto.plot}}{Logical. If \code{TRUE}, \code{plot()} is
+called automatically after \code{initialize()} and after
+every \code{move()}.}
 
-    \item{\code{auto.print}}{Logical. If \code{TRUE}, \code{print()} is called
-automatically after \code{initialize()} and after every \code{move()}.}
+    \item{\code{auto.print}}{Logical. If \code{TRUE}, \code{print()} is
+called automatically after \code{initialize()} and after
+every \code{move()}.}
 
-    \item{\code{safe.teleport}}{Logical. If \code{TRUE}, teleporting (\code{move("T")})
-will keep re-rolling a random destination until it lands at least two
-squares (in squared distance) away from every robot and pile, so the
-player cannot teleport directly into danger.}
+    \item{\code{safe.teleport}}{Logical. If \code{TRUE}, teleporting
+(\code{move("T")}) will keep re-rolling a random destination
+until it lands at least two squares (in squared distance)
+away from every robot and pile, so the player cannot teleport
+directly into danger.}
 
-    \item{\code{move.mat}}{A 3x3 character matrix mapping relative grid position to
-compass-direction move codes (\code{"N"}, \code{"NE"}, \code{"E"},
-\code{"SE"}, \code{"S"}, \code{"SW"}, \code{"W"}, \code{"NW"}, and
-\code{"."} for no movement), used internally by \code{move()} to
-translate a direction string into a change in position.}
+    \item{\code{move.mat}}{A 3x3 character matrix mapping relative grid
+position to compass-direction move codes (\code{"N"},
+\code{"NE"}, \code{"E"}, \code{"SE"}, \code{"S"}, \code{"SW"},
+\code{"W"}, \code{"NW"}, and \code{"."} for no movement),
+used internally by \code{move()} to translate a direction
+string into a change in position.}
   }
   \if{html}{\out{</div>}}
 }
@@ -150,6 +139,9 @@ translate a direction string into a change in position.}
 \if{html}{\out{<a id="method-R6Robots-initialize"></a>}}
 \if{latex}{\out{\hypertarget{method-R6Robots-initialize}{}}}
 \subsection{\code{R6Robots$new()}}{
+  Creates a new game. Places the player at the center of the board
+and scatters \code{nrobots} robots at random, non-overlapping
+locations.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{R6Robots$new(
@@ -164,14 +156,17 @@ translate a direction string into a change in position.}
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{nrow}}{Number of rows on the game board.}
-      \item{\code{ncol}}{Number of columns on the game board.}
-      \item{\code{auto.print}}{Logical. If \code{TRUE}, \code{print()} is called
-automatically after \code{initialize()} and after every \code{move()}.}
-      \item{\code{auto.plot}}{Logical. If \code{TRUE}, \code{plot()} is called
-automatically after \code{initialize()} and after every \code{move()}.}
+      \item{\code{nrobots}}{Number of robots to create.}
+      \item{\code{nrow, ncol}}{Dimensions of the game board.}
+      \item{\code{auto.print}}{Whether to call \code{print()} automatically
+after each state change.}
+      \item{\code{auto.plot}}{Whether to call \code{plot()} automatically
+after each state change.}
     }
     \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A new \code{Robots} object.
   }
 }
 
@@ -179,10 +174,18 @@ automatically after \code{initialize()} and after every \code{move()}.}
 \if{html}{\out{<a id="method-R6Robots-plot"></a>}}
 \if{latex}{\out{\hypertarget{method-R6Robots-plot}{}}}
 \subsection{\code{R6Robots$plot()}}{
+  Draws the current board state using base graphics: a
+checkerboard background, and points for the player, corpse,
+robots, and junk piles. Displays a warning title if a robot is
+within one move of the player.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{R6Robots$plot()}
     \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{NULL}, invisibly. Called for its side effect of
+  drawing a plot.
   }
 }
 
@@ -190,10 +193,18 @@ automatically after \code{initialize()} and after every \code{move()}.}
 \if{html}{\out{<a id="method-R6Robots-print"></a>}}
 \if{latex}{\out{\hypertarget{method-R6Robots-print}{}}}
 \subsection{\code{R6Robots$print()}}{
+  Prints an ASCII-art representation of the current board state
+to the console, bordered by \code{-} and \code{|} characters.
+Prints a warning message if a robot is within one move of the
+player.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{R6Robots$print()}
     \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{NULL}, invisibly. Called for its side effect of
+  printing to the console.
   }
 }
 
@@ -201,10 +212,32 @@ automatically after \code{initialize()} and after every \code{move()}.}
 \if{html}{\out{<a id="method-R6Robots-move"></a>}}
 \if{latex}{\out{\hypertarget{method-R6Robots-move}{}}}
 \subsection{\code{R6Robots$move()}}{
+  Advances the game by one turn. The player is moved first, then
+every robot takes one step towards the player's new position.
+Colliding robots become junk piles, and any robot landing on
+the player ends the game. If \code{auto.print} or
+\code{auto.plot} is \code{TRUE}, the board is redrawn after the
+move.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{R6Robots$move(dir)}
     \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{dir}}{A direction string, one of \code{"N"}, \code{"NE"},
+\code{"E"}, \code{"SE"}, \code{"S"}, \code{"SW"}, \code{"W"},
+\code{"NW"}, \code{"."} (stay put), or \code{"T"} (teleport
+to a random square). A direction may be followed by a number
+of steps, e.g. \code{"N3"} to move north three times in
+succession.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{NULL}, invisibly, or (if the game has ended)
+  \code{invisible(1)}.
   }
 }
 
