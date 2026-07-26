@@ -337,4 +337,78 @@ getGraphicsEvent(
   }
 )
 
+## list stuff -----
 
+tmplst <- list(a=1, b=2)
+
+tmpfun <- function(...) {
+  a <- tmplst
+  b <- list(...)
+  nms <- names(b)
+  for(i in nms) {
+    a[[i]] <- b[[i]]
+  }
+  a
+}
+
+tmpfun( c=3)
+tmpfun( d=5, a=NULL)
+
+## TurtleGraphics ----
+
+t1 <- R6TurtleGraphics$new()
+t1$PenDown()
+
+nsides <- 7
+len <- 200/nsides
+for(i in 1:nsides) {
+  t1$move(len)
+  t1$turn(360/nsides)
+  if(interactive()) Sys.sleep(0.5)
+}
+
+t2 <- R6TurtleGraphics$new()
+t2$PenDown()
+
+nsides <- 4
+len <- 200/nsides
+npoly <- 13
+cols <- rainbow(npoly)
+for(i in 1:npoly) {
+  t2$NewPen(col=cols[i])
+  for(j in 1:nsides) {
+    t2$move(len)
+    t2$turn(360/nsides)
+    if(interactive()) Sys.sleep(0.2)
+  }
+  t2$turn(360/npoly)
+}
+
+# dance of the turtles
+
+tmpfun <- function(i) {
+  tmp <- R6TurtleGraphics$new(add = i != 1,
+    autoplot = FALSE)
+  tmp$turn(360/npoly*i)
+  tmp$NewPen(col=cols[i])
+  tmp$PenDown()
+  tmp$turtle.size <- 4
+  tmp$pen.cex <- 1
+  tmp
+}
+
+nsides <- 300
+len <- 200/nsides
+
+turtles <- lapply(1:npoly, tmpfun)
+
+turtles[[1]]$plot()
+
+for(j in 1:nsides) {
+  for(i in 1:npoly) {
+    turtles[[i]]$move(len)
+    turtles[[i]]$turn(360/nsides)
+    turtles[[i]]$plot()
+  }
+  if(interactive()) Sys.sleep(0.05)
+}
