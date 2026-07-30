@@ -13,3 +13,4 @@ Encoding: UTF-8
 Imports: R6
 Config/roxygen2/version: 8.0.0
 RoxygenNote: 8.0.0
+LazyData: true
