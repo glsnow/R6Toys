@@ -412,3 +412,89 @@ for(j in 1:nsides) {
   }
   if(interactive()) Sys.sleep(0.05)
 }
+
+## clipboard editor ----
+
+sl <- R6ClipboardEdit$new('slash')
+
+#  C:\Users\gls33\Box\Statistics-GLS33\Statistics-GLS33\JSM
+#  C:/Users/gls33/Box/Statistics-GLS33/Statistics-GLS33/JSM
+
+custom <- R6ClipboardEdit$new(\(x){gsub('[0-9]', '?', x)})
+# mean: 123.45, sd: 5.4
+# mean: ???.??, sd: ?.?
+
+cc <- R6ClipboardEdit$new(2)
+
+x <- rnorm(1000)
+mean(x)
+sd(x)
+quantile(x)
+
+mean(
+  x
+)
+sd(
+  x
+)
+
+ccco <- R6ClipboardEdit$new('ccco')
+
+x <- rnorm(1000)
+mean(x)
+##  [1] 0.01287882
+sd(x)
+##  [1] 0.9976802
+quantile(x)
+##            0%          25%          50%          75%         100% 
+##  -2.954844152 -0.648035221  0.007866633  0.674765782  3.179929403 
+
+mean(
+  x
+)
+##  [1] 0.01287882
+sd(
+  x
+)
+##  [1] 0.9976802
+
+tt <- R6ClipboardEdit$new("tt")
+summary(lm(mpg ~ ., data=mtcars))
+
+com <- R6ClipboardEdit$new("comment")
+ucom <- R6ClipboardEdit$new("uncomment")
+
+##  x <- rnorm(1000)
+##  mean(x)
+##  sd(x)
+##  quantile(x)
+
+wc <- R6ClipboardEdit$new("wc")
+
+#  one upon a time the quick brown fox jumped over the lazy
+#  dogs back and forth and again and again and again
+
+di <- R6ClipboardEdit$new('di')
+
+fit<n> <- lm(a ~ b, data=c)
+fit<n>.0 <- update(fit<n>, .~1)
+anova(fit<n>, fit<n>.0)
+summary(fit<n>)
+
+fit1 <- lm(a ~ b, data=c)
+fit1.0 <- update(fit1, .~1)
+anova(fit1, fit1.0)
+summary(fit1)
+
+fit1 <- lm(a ~ b, data=c)
+fit1.0 <- update(fit1, .~1)
+anova(fit1, fit1.0)
+summary(fit1)
+
+fit3 <- lm(a ~ b, data=c)
+fit3.0 <- update(fit3, .~1)
+anova(fit3, fit3.0)
+summary(fit3)
+
+
+
