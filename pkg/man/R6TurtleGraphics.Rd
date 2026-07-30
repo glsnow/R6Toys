@@ -161,6 +161,12 @@ for (j in 1:nsides) {
 }
 
 }
+\seealso{
+\code{\link[TurtleGraphics]{turtle_init}} and the \pkg{TurtleGraphics}
+package for an alternative turtle graphics implementation featuring a
+more detailed turtle icon. \pkg{TurtleGraphics} is built on R's
+\pkg{grid} graphics system and provides a procedural (non-R6) interface.
+}
 \section{Public fields}{
   \if{html}{\out{<div class="r6-fields">}}
   \describe{

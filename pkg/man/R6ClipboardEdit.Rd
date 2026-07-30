@@ -40,8 +40,9 @@ built-in to produce incrementing numeric substitutions.
     backslash (\code{\\}) with a forward slash (\code{/}). Useful for
     converting file paths copied from Windows Explorer.}
   \item{\code{"copycode"} (aliases: \code{"cc"}, \code{"cco"})}{Strip R
-    console prompts (\code{>} and \code{+}) from clipboard text that was
-    copied from an R session, leaving only the code. Continuation-prompt
+    console prompts (\code{> } and \code{+ }) from clipboard text that was
+    copied from an R session, leaving only the code (any output is removed).
+    Continuation-prompt
     lines are re-indented by \code{ns} spaces (default 2).}
   \item{\code{"copycodecommentoutput"} (aliases: \code{"ccc"},
     \code{"ccco"})}{Like \code{"copycode"}, but keeps output lines and
@@ -138,7 +139,7 @@ uc$do()
 ## e.g.:  item_<n> <- list()
 di <- R6ClipboardEdit$new("dupinc")
 di$do()  # counter = 1, clipboard holds: item_1 <- list()
-## Paste into your script, copy the template again, then:
+## Paste into your script, copy the template again (or use $undo()), then:
 di$do()  # counter = 2, clipboard holds: item_2 <- list()
 
 
@@ -159,7 +160,8 @@ slash_fix   # printing the object calls $do() automatically
 ## Example 11: Undo the last transformation
 ## If $do() produced an unwanted result, restore the previous clipboard:
 slash_fix$undo()
-## Now paste — the original text is back on the clipboard.
+## Now paste or do another transformation — the original text is 
+## back on the clipboard.
 }
 
 }

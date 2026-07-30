@@ -147,6 +147,12 @@
 #' want to use a graphical device with recording turned off, or set 
 #' \code{autoplot = FALSE}.
 #' 
+#' @seealso
+#' \code{\link[TurtleGraphics]{turtle_init}} and the \pkg{TurtleGraphics}
+#' package for an alternative turtle graphics implementation featuring a
+#' more detailed turtle icon. \pkg{TurtleGraphics} is built on R's
+#' \pkg{grid} graphics system and provides a procedural (non-R6) interface.
+#'
 #' @export
 R6TurtleGraphics <- R6Class("R6TurtleGraphics",
   public = list(
