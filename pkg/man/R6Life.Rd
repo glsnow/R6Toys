@@ -58,10 +58,11 @@ g$add(c(4, 3))
 g$plot()
 
 # Advance 20 generations
-for (i in 1:20) {
-  g$tick()
+if(interactive()) {
+  g$tick(n = 20, pause = 0.15, plot = TRUE)
+} else {
+  g$tick(n = 20, pause = 0, plot = FALSE)
   g$plot()
-  if (interactive()) Sys.sleep(0.15)
 }
 
 ## A blinker — a period-2 oscillator
@@ -72,21 +73,24 @@ b$add(c(5, 5))
 b$add(c(5, 6))
 b$plot()
 
-for (i in 1:6) {
-  b$tick()
+if(interactive()) {
+  b$tick(n = 20, pause = 0.3, plot = TRUE)
+} else {
+  b$tick(n = 20, pause = 0, plot = FALSE)
   b$plot()
-  if (interactive()) Sys.sleep(0.3)
 }
 
 ## Torus (wrap-around) boundary with a glider
 tw <- R6Life$new(xlim = c(1, 15), ylim = c(1, 15), boundary = "torus")
 tw$autoplot <- FALSE
-tw$add(c(2, 3)); tw$add(c(3, 1)); tw$add(c(3, 3))
-tw$add(c(4, 2)); tw$add(c(4, 3))
-for (i in 1:40) {
-  tw$tick()
+tw$add(c(5, 3))$add(c(6, 1))$add(c(6, 3))
+tw$add(c(7, 2))$add(c(7, 3))
+
+if(interactive()) {
+  tw$tick(n = 100, pause = 0.1, plot = TRUE)
+} else {
+  tw$tick(n = 100, pause = 0, plot = FALSE)
   tw$plot()
-  if (interactive()) Sys.sleep(0.1)
 }
 
 }
@@ -340,7 +344,7 @@ re-plotted if \code{plot = TRUE} (with a \code{self$pause}-second delay
 between frames when \code{n > 1}).
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{R6Life$tick(n = 1, plot = self$autoplot)}
+    \preformatted{R6Life$tick(n = 1, pause = self$pause, plot = self$autoplot)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -348,6 +352,7 @@ between frames when \code{n > 1}).
     \describe{
       \item{\code{n}}{Positive integer. Number of generations to advance.
 Default \code{1}.}
+      \item{\code{pause}}{Numeric. Delay between frames in seconds. Default \code{self$pause}.}
       \item{\code{plot}}{Logical. Whether to plot after each generation.
 Defaults to \code{self$autoplot}.}
     }

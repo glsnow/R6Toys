@@ -91,9 +91,9 @@
 #' tw$add(c(7, 2))$add(c(7, 3))
 #' 
 #' if(interactive()) {
-#'   tw$tick(n=100, pause=0.1, plot=TRUE)
+#'   tw$tick(n = 100, pause = 0.1, plot = TRUE)
 #' } else {
-#'   tw$tick(n=100, pause=0, plot=FALSE)
+#'   tw$tick(n = 100, pause = 0, plot = FALSE)
 #'   tw$plot()
 #' }
 #'
