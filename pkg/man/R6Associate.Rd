@@ -10,7 +10,7 @@ inspired by iAssociate.  The game is represented as an
 be guessed.  Starting from one revealed word, players
 incrementally uncover adjacent words by typing guesses;
 each correct guess reveals matching letters and unlocks
-the neighbours of any fully-solved word.
+the neighbours of any fully-solved words.
 }
 \details{
 Construct the game with \code{R6Associate$new()}, passing
@@ -22,7 +22,8 @@ start-up.
 Guesses are matched using a fuzzy prefix regex so that
 typing \code{"co"} will reveal the letters \code{c} and
 \code{o} wherever they occur at the start of an active
-word, and typing a full word reveals it entirely.
+word or at the start of the unguessed section, and 
+typing a full word reveals it entirely.
 
 The current subgraph is stored in \code{$cur} and
 re-plotted automatically after each guess when
@@ -106,6 +107,47 @@ a$guess("e")
 a$guess("residuals")
 }
 
+}
+\section{Public fields}{
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{blank}}{An \code{igraph} object identical to the answer
+graph but with all vertex labels removed. Useful with
+\code{igraph::tkplot()} for interactive layout adjustment
+without revealing the answers.}
+
+    \item{\code{layout}}{Numeric matrix with two columns. Each row holds
+the \code{(x, y)} coordinates used when plotting the
+corresponding vertex. Updated by assigning the result of
+\code{igraph::tk_coords()} after interactive layout editing.}
+
+    \item{\code{cur}}{An \code{igraph} subgraph containing only the
+vertices that are currently visible to the player (fully
+solved vertices and their immediate neighbours). Vertex
+names reflect partial progress, with unguessed letters
+replaced by the \code{blank_symbol}.}
+
+    \item{\code{plot_param}}{Named list of graphical parameters forwarded
+to \code{igraph::plot.igraph()} when \code{$plot()} is
+called. Defaults: \code{vertex.size = 10},
+\code{vertex.color = "lightblue"},
+\code{vertex.frame.color = NA},
+\code{vertex.shape = "rectangle"}.}
+
+    \item{\code{autoplot}}{Logical. If \code{TRUE} (default), the game
+graph is re-plotted automatically after each call to
+\code{$guess()}.}
+
+    \item{\code{autoprint}}{Logical. If \code{TRUE}, \code{$print()} is
+called automatically after each guess to display the current
+clues in the console. Default \code{FALSE}.}
+
+    \item{\code{zoom}}{Logical. If \code{TRUE} (default), plot axes are
+scaled to the current visible subgraph. If \code{FALSE}, the
+full layout extent is preserved so nodes do not appear to
+jump as the graph grows.}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Active bindings}{
   \if{html}{\out{<div class="r6-active-bindings">}}
@@ -224,8 +266,7 @@ their neighbours.
     \if{html}{\out{</div>}}
   }
   \subsection{Returns}{
-    Called for its side effects (updating game state,
-  optionally re-plotting and printing).
+    The \code{R6Associate} object (invisibly).
   }
 }
 
