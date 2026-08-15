@@ -38,5 +38,6 @@ mancala  https://en.wikipedia.org/wiki/Mancala
 chess/checkers/go boards
 clipboard editor
 transcript
-
+image morph
+synthetic data generation
 

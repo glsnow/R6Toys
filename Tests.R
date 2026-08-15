@@ -413,6 +413,19 @@ for(j in 1:nsides) {
   if(interactive()) Sys.sleep(0.05)
 }
 
+t1 <- R6TurtleGraphics$new()
+t1$NewPen(col=rainbow(1, start=0))
+t1$PenDown()
+t1$autoplot <- FALSE
+for(i in seq_len(175)) {
+  t1$forward(i)
+  t1$turn(80)
+  if(i%%4 == 0) t1$NewPen(col=rainbow(1, start=i/176))
+}
+t1$plot()
+
+
+
 ## clipboard editor ----
 
 sl <- R6ClipboardEdit$new('slash')
@@ -495,6 +508,212 @@ fit3 <- lm(a ~ b, data=c)
 fit3.0 <- update(fit3, .~1)
 anova(fit3, fit3.0)
 summary(fit3)
+
+## environments (hash) ----
+
+e <- new.env(parent=emptyenv())
+e$a <- 1
+e$b <- 2
+names(e)
+ls(e)
+
+e[['a']]
+e[['5']] <- 'five'
+names(e)
+e[[5]]
+
+e[['.._%^*']] <- TRUE
+names(e)
+
+## R6Dict ----
+
+d <- R6Dict$new(keys=letters[1:5], values=LETTERS[1:5])
+d$keys()
+d$remove('c')
+d$add(z=1, y=2)
+d$add(list(x=3, w=4))
+for(i in d$keys()) cat(i, ": ", d$value(i), "\n")
+d$toList()
+d$toList(simplify=FALSE)
+sapply(sort(d$keys()), function(x) d$value(x))
+
+tab <- R6Dict$new()
+for(i in state.name) {
+  tab$counter(substring(i, 1, 1))$pp
+}
+tab$toList()
+
+tab2 <- R6Dict$new()
+for(i in state.name) {
+  tab2$DLL(substring(i, 1, 1))$push(i)
+}
+tab2$toList()
+
+
+## associate ----
+
+library(harrypotter)
+library(tidytext)
+library(tidyverse)
+library(fuzzyjoin)
+
+word_pos <- tibble(text = philosophers_stone[2]) |>
+  unnest_tokens(word, text) |>
+  anti_join(stop_words, by='word') |>
+  mutate(word_id = row_number())
+
+word_pairs <- word_pos |>
+  difference_inner_join(
+    word_pos, 
+    by="word_id",
+    max_dist = 10
+  ) |>
+  filter(word.x < word.y) |>
+  count(word.x, word.y, sort=TRUE) |>
+  rename(word1=word.x, word2=word.y, count=n)
+
+
+head(word_pairs)
+
+library(igraph)
+
+hp <- as.matrix(word_pairs[1:100, 1:2]) |>
+  t() |>
+  as.vector() |>
+  make_graph(directed=FALSE)
+
+plot(hp)
+hp2 <- largest_component(hp)
+length(V(hp2))
+length(E(hp2))
+edge_connectivity(hp2)
+plot(hp2, )
+tkplot(hp2)
+
+
+
+regexpr("^s(t(a(r(t)?)?)?)?", c(tmp,'cat'))
+
+tmp <- data.frame(txt=paste(letters, collapse=' '))
+unnest_skip_ngrams(tmp, word, txt, n=2, n_min=2, k=5)
+
+sw <- function(x) {
+   sapply(strsplit(x, ' '), function(y) {
+     if(y[1] == y[2]) return(NA)
+     paste(sort(y), collapse=' ')
+   }
+   )
+}
+
+tmp1 <- tibble(text = philosophers_stone[3]) |>
+  unnest_tokens(word, text) |>
+  anti_join(stop_words, by='word')
+tmp2 <- paste(tmp1$word, collapse=" ")
+tmp3 <- tibble(txt=tmp2) |>
+  unnest_skip_ngrams(pair, txt, n=2, n_min=2, k=10) |>
+  mutate(pair=sw(pair)) |>
+  count(pair, sort=TRUE) |>
+  na.omit()
+
+hp1 <- strsplit(tmp3$pair[1:25], ' ') |>
+  unlist() |>
+  make_graph(directed=FALSE) |>
+  largest_component()
+
+length(V(hp1))
+length(E(hp1))  
+plot(hp1)
+
+tmp4 <- strsplit(tmp3$pair[tmp3$n > 2], ' ')
+tmp_v <- names(V(hp1))
+for(i in seq_along(tmp4)) {
+  if(all(tmp4[[i]] %in% tmp_v)) {
+    cat('(', i, ') ', tmp4[[i]], "\n")
+    hp1 <- add_edges(hp1, match(tmp4[[i]], tmp_v))
+  }
+}
+hp1 <- simplify(hp1)
+length(E(hp1))
+plot(hp1)
+
+plot(hp1)
+
+
+
+lm1 <- c(
+  "lm", "coef",
+  "lm", "effects", 
+  "lm", "residuals",
+  "lm", "fitted",
+  "lm", "vcov",
+  "coef", "fitted",
+  "coef", "residuals",
+  "coef", "glm",
+  "glm", "fitted",
+  "glm", "residuals",
+  "glm", "esoph",
+  "glm", "infert",
+  "residuals", "resid",
+  "fitted", "fitted.values"
+) |>
+  make_graph(directed=FALSE)
+V(lm1)$name <- gsub("[a-z]", "-", V(lm1)$name)
+lay1 <- layout_nicely(lm1)
+plot(lm1, vertex.frame.color=NA, vertex.shape = 'rectangle',
+     vertex.size=10*nchar(names(V(lm1))), vertex.color='lightblue',
+     layout=lay1)
+
+
+
+
+## text connection inside R6 ----
+
+R6t <- R6Class("R6t", 
+               public=list(
+                 con = NULL,
+                 c.dll = NULL,
+                 r.dll = NULL,
+                 o.dll = NULL,
+                 cbm = NULL,
+                 initialize=function() {
+                   self$c.dll <- R6DLL$new()
+                   self$r.dll <- R6DLL$new()
+                   self$o.dll <- R6DLL$new()
+                   self$con <- file()
+                   self$cbm <- taskCallbackManager()
+                 },
+                 start = function() {
+                   sink(file=self$con, split=TRUE)
+                   self$cbm$add(private$record, name='trns')
+                 },
+                 end=function() {
+                   sink()
+                   self$cbm$remove("trns")
+                 }
+               ),
+               private = list(
+                 record = function(cmd, result, success, visible) {
+                   self$c.dll$push(cmd)
+                   self$r.dll$push(result)
+                   self$o.dll$push(readLines(self$con))
+                   return(TRUE)
+                 },
+                 finalize = function() {
+                   close(self$con)
+                 }
+               )
+               )
+tst <- R6t$new()
+tst$start()
+1 + 2
+log(-1)
+3 + 4
+x <- rnorm(10)
+tst$end()
+tst$c.dll$peek_first()
+tst$c.dll$toList()
+tst$r.dll$toList()
+tst$o.dll$toList()
 
 
 

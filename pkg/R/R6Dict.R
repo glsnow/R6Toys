@@ -105,8 +105,6 @@ R6Dict <- R6Class("R6Dict",
     #'   \item \code{keys} + \code{values}: parallel character vector of keys
     #'     and corresponding vector or list of values.
     #'   \item \code{...}: named arguments, e.g. \code{d$add(x=1, y=2)}.
-    #'     Values are captured unevaluated, so this form is best suited to
-    #'     literal constants.
     #' }
     #' @param list A named list of key-value pairs to add.
     #' @param ... Named arguments whose names are keys and whose values are
@@ -133,7 +131,7 @@ R6Dict <- R6Class("R6Dict",
         }
       }
       if (...length()) {
-        dots <- match.call(expand.dots = FALSE)$...
+        dots <- base::list(...)
         for (i in seq_along(dots)) {
           self$dict[[names(dots)[i]]] <- dots[[i]]
         }
