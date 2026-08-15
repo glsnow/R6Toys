@@ -25,12 +25,14 @@ value types: \code{$counter()} returns an \code{R6Counter} for a key
 (creating one if it does not yet exist), and \code{$DLL()} does the same
 for an \code{R6DLL}. These are useful for building frequency tables or
 grouping values under a key without manually checking for existence first.
+These should not be mixed with each other, or other types of values.
 }
 \examples{
 ## Basic key-value storage
 d <- R6Dict$new()
 d$add(list(a = 1, b = 2, c = 3))
-d$keys()           # c("a", "b", "c")
+d$add(d = 4, e = 5)
+d$keys()           # c("a", "b", "c", "d", "e")
 d$value("b")       # 2
 d$contains("c")    # TRUE
 d$contains("z")    # FALSE
@@ -38,6 +40,7 @@ d$contains("z")    # FALSE
 ## Add entries with keys= and values=
 d$add(keys = c("x", "y"), values = c(10, 20))
 d$toList()
+sapply(sort(d$keys()), function(x) d$value(x))
 
 ## Remove an entry
 d$remove("a")
@@ -47,24 +50,20 @@ d$keys()
 d2 <- R6Dict$new(list(alpha = "first", beta = "second"))
 d2$value("alpha")  # "first"
 
-## Counter dictionary: count word frequencies
-sentence <- c("the", "cat", "sat", "on", "the", "mat", "the")
-freq <- R6Dict$new()
-for (w in sentence) {
-  freq$counter(w)$inc()
+## Counter dictionary:
+tab <- R6Dict$new()
+for(i in state.name) {
+  tab$counter(substring(i, 1, 1))$pp
 }
-freq$toList()      # named vector of counts, sorted by key
+tab$toList()
 
 ## DLL dictionary: group values by key
-grp <- R6Dict$new()
-items <- data.frame(
-  key = c("a", "b", "a", "c", "b", "a"),
-  val = 1:6
-)
-for (i in seq_len(nrow(items))) {
-  grp$DLL(items$key[i])$push(items$val[i])
+
+tab2 <- R6Dict$new()
+for(i in state.name) {
+  tab2$DLL(substring(i, 1, 1))$push(i)
 }
-grp$toList()       # named list of vectors, sorted by key
+tab2$toList()
 
 }
 \section{Public fields}{
@@ -138,8 +137,6 @@ be combined in a single call:
   \item \code{keys} + \code{values}: parallel character vector of keys
     and corresponding vector or list of values.
   \item \code{...}: named arguments, e.g. \code{d$add(x=1, y=2)}.
-    Values are captured unevaluated, so this form is best suited to
-    literal constants.
 }
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
