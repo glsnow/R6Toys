@@ -555,7 +555,7 @@ tab2$toList()
 library(harrypotter)
 library(tidytext)
 library(tidyverse)
-library(fuzzyjoin)
+#library(fuzzyjoin)
 
 word_pos <- tibble(text = philosophers_stone[2]) |>
   unnest_tokens(word, text) |>
@@ -605,7 +605,7 @@ sw <- function(x) {
    )
 }
 
-tmp1 <- tibble(text = philosophers_stone[3]) |>
+tmp1 <- tibble(text = philosophers_stone[4]) |>
   unnest_tokens(word, text) |>
   anti_join(stop_words, by='word')
 tmp2 <- paste(tmp1$word, collapse=" ")
@@ -615,7 +615,7 @@ tmp3 <- tibble(txt=tmp2) |>
   count(pair, sort=TRUE) |>
   na.omit()
 
-hp1 <- strsplit(tmp3$pair[1:25], ' ') |>
+hp1 <- strsplit(tmp3$pair[1:50], ' ') |>
   unlist() |>
   make_graph(directed=FALSE) |>
   largest_component()

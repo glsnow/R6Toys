@@ -209,6 +209,8 @@ R6Associate <- R6Class("R6Associate",
             #' Plot the current state of the game graph.
             #' @return The \code{R6Associate} object (invisibly).
             plot = function() {
+              op <- par(mar=rep(0,4))
+              on.exit(par(op))
               w <- which(private$status > 0)
               tmp.p <- self$plot_param
               tmp.p$vertex.size <- tmp.p$vertex.size * nchar(V(self$cur)$name)
