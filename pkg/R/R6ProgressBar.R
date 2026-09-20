@@ -23,8 +23,10 @@ NULL
 #' of length \code{max} whose elements are displayed one-by-one as the
 #' bar advances.
 #'
-#' When \code{cycle = TRUE}, incrementing past \code{max} wraps the
-#' displayed position back to 1 (the counter value itself keeps growing).
+#' When \code{cycle = TRUE}, incrementing past \code{max} resets
+#' \code{value} back to \code{min} (and decrementing below \code{min}
+#' resets it to \code{max}); unlike non-cycling bars, the counter
+#' value itself does not keep growing past \code{max}.
 #'
 #' The progress bar window is automatically closed when the
 #' \code{R6ProgressBar} object is garbage-collected.
@@ -94,10 +96,13 @@ R6ProgressBar <- R6Class("R6ProgressBar",
 
     #' @field label Character. The label template or vector supplied at
     #'   construction.
-    label = "",
+    label = "%d",
 
     #' @field max Integer. The maximum value of the progress bar.
     max = 0,
+
+    #' @field min Integer. The minimum value of the progress bar.
+    min = 0,
 
     #' @field pb The underlying progress bar object returned by
     #'   \code{txtProgressBar}, \code{tkProgressBar}, or
@@ -113,7 +118,8 @@ R6ProgressBar <- R6Class("R6ProgressBar",
     #'
     #' @param max Integer. The maximum value of the progress bar (required).
     #' @param min Integer. The minimum value. Default \code{0}.
-    #' @param initial Integer. The initial position of the bar. Default \code{0}.
+    #' @param initial Integer. The initial position of the bar. Default
+    #'   is the value of \code{min}.
     #' @param type Character. Progress bar type. One of \code{"auto"},
     #'   \code{"txt"}, \code{"tk"}, or \code{"win"}. \code{"auto"} (the
     #'   default) selects \code{"win"} if \code{winProgressBar} is available,
@@ -131,7 +137,7 @@ R6ProgressBar <- R6Class("R6ProgressBar",
     #'   constructor (e.g. \code{title} for \code{winProgressBar}).
     #' @return A new \code{R6ProgressBar} object (invisibly) to allow chaining.
     initialize = function(max, min = 0,
-                          initial = 0,
+                          initial = min,
                           type = c("auto", "txt", "tk", "win"),
                           style = 3, label = "%d",
                           cycle = FALSE,
@@ -151,6 +157,7 @@ R6ProgressBar <- R6Class("R6ProgressBar",
       self$type  <- type
       self$label <- label
       self$max   <- max
+      self$min   <- min
       self$cycle <- cycle
       if (length(label) > 1) {
         lab <- label[1]
@@ -175,10 +182,12 @@ R6ProgressBar <- R6Class("R6ProgressBar",
     inc = function(x = 1) {
       super$inc(x)
       if (self$cycle) {
-        super$set(((self$value - 1) %% self$max) + 1)
+        if(self$value > self$max) self$value <- self$min
       }
       if (length(self$label) > 1) {
         lab <- self$label[self$value]
+      } else if(is.null(self$label)) {
+        lab <- self$val
       } else {
         lab <- sprintf(self$label, self$value)
       }
@@ -195,12 +204,17 @@ R6ProgressBar <- R6Class("R6ProgressBar",
     #' @return The \code{R6ProgressBar} object (invisibly) to allow chaining.
     dec = function(x = 1) {
       super$dec(x)
+      if(self$cycle) {
+        if(self$value < self$min) self$value <- self$max
+      }
       if (length(self$label) > 1) {
         if (self$value) {
           lab <- self$label[self$value]
         } else {
           lab <- self$label[1]
         }
+      } else if(is.null(self$label)) {
+        lab <- self$val
       } else {
         lab <- sprintf(self$label, self$value)
       }
@@ -223,6 +237,8 @@ R6ProgressBar <- R6Class("R6ProgressBar",
         } else {
           lab <- self$label[1]
         }
+      } else if(is.null(self$label)) {
+        lab <- self$val
       } else {
         lab <- sprintf(self$label, self$value)
       }
@@ -258,11 +274,11 @@ R6ProgressBar <- R6Class("R6ProgressBar",
   ),
   active = list(
 
-    #' @field reset Active binding. Reading resets the bar to 0.
+    #' @field reset Active binding. Reading resets the bar to \code{min}.
     #'   Assigning a value \code{x} resets it to \code{x} instead.
     reset = function(x) {
       if (missing(x)) {
-        x <- 0
+        x <- self$min
       }
       self$set(x)
     },

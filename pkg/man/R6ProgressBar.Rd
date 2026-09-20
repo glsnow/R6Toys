@@ -23,8 +23,10 @@ default) that is filled with the current value, or a character vector
 of length \code{max} whose elements are displayed one-by-one as the
 bar advances.
 
-When \code{cycle = TRUE}, incrementing past \code{max} wraps the
-displayed position back to 1 (the counter value itself keeps growing).
+When \code{cycle = TRUE}, incrementing past \code{max} resets
+\code{value} back to \code{min} (and decrementing below \code{min}
+resets it to \code{max}); unlike non-cycling bars, the counter
+value itself does not keep growing past \code{max}.
 
 The progress bar window is automatically closed when the
 \code{R6ProgressBar} object is garbage-collected.
@@ -107,6 +109,8 @@ construction.}
 
     \item{\code{max}}{Integer. The maximum value of the progress bar.}
 
+    \item{\code{min}}{Integer. The minimum value of the progress bar.}
+
     \item{\code{pb}}{The underlying progress bar object returned by
 \code{txtProgressBar}, \code{tkProgressBar}, or
 \code{winProgressBar}.}
@@ -119,7 +123,7 @@ the display position back to 1.}
 \section{Active bindings}{
   \if{html}{\out{<div class="r6-active-bindings">}}
   \describe{
-    \item{\code{reset}}{Active binding. Reading resets the bar to 0.
+    \item{\code{reset}}{Active binding. Reading resets the bar to \code{min}.
 Assigning a value \code{x} resets it to \code{x} instead.}
 
     \item{\code{finished}}{Active binding. Returns \code{TRUE} when
@@ -153,7 +157,7 @@ Assigning a value \code{x} resets it to \code{x} instead.}
     \preformatted{R6ProgressBar$new(
   max,
   min = 0,
-  initial = 0,
+  initial = min,
   type = c("auto", "txt", "tk", "win"),
   style = 3,
   label = "\%d",
@@ -167,7 +171,8 @@ Assigning a value \code{x} resets it to \code{x} instead.}
     \describe{
       \item{\code{max}}{Integer. The maximum value of the progress bar (required).}
       \item{\code{min}}{Integer. The minimum value. Default \code{0}.}
-      \item{\code{initial}}{Integer. The initial position of the bar. Default \code{0}.}
+      \item{\code{initial}}{Integer. The initial position of the bar. Default
+is the value of \code{min}.}
       \item{\code{type}}{Character. Progress bar type. One of \code{"auto"},
 \code{"txt"}, \code{"tk"}, or \code{"win"}. \code{"auto"} (the
 default) selects \code{"win"} if \code{winProgressBar} is available,

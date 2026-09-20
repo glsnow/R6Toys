@@ -99,25 +99,29 @@ state.dll$iter_all(function(x) cat(x$name, ": ", x$stats[['Population']], "\n"))
 
 
 gc()
-pryr::mem_used()
+lobstr::mem_used()
 test.dll <- R6DLL$new()
 
 for(i in 1:10000) test.dll$push(i)
 gc()
-pryr::mem_used()
+lobstr::mem_used()
 rm(test.dll)
 gc()
-pryr::mem_used()
+lobstr::mem_used()
 
-pryr::mem_change({
+m <- lobstr::mem_used()
   test.dll <- R6DLL$new()
   for(i in 1:10000) test.dll$push(i)
-})
+m2 <- lobstr::mem_used()
+m2 - m
 
-pryr::mem_change( {
+m3 <- lobstr::mem_used() 
   rm(test.dll) 
   gc()
-})
+m4 <- lobstr::mem_used()
+m4 - m3
+m4 - m
+
 
 ## tests R6Counter ----
 
@@ -187,6 +191,63 @@ for(i in LETTERS) {
 
 close(pb)
 
+# convert value to differnt way of printing
+
+## Roman Numerals
+rmn <- R6Counter$new(
+  convert = function(x) as.roman(x),
+  iconvert = function(x) as.numeric(as.roman(x))
+)
+
+rmn$val <- 'xix'
+rmn$val
+rmn$pp
+rmn$pp
+rmn$pp
+rmn$pp <- 51
+rmn$val
+rmn$mm
+rmn$mm <- 3
+rmn$val
+rmn$value
+
+## Dates
+
+Date_c <- R6Counter$new()
+Date_c$convert$convert <- as.Date
+Date_c$convert$iconvert <- function(x) as.numeric(as.Date(x))
+
+Date_c$val <- '2026-12-25'
+Date_c$value
+for(i in 1:12) {
+  print(Date_c$pp)
+}
+
+## Start counting in binary
+
+x <- R6Counter$new(
+  convert = function(x) Int2Base(x, 2),
+  iconvert = function(x) Base2Int(x, 2)
+)
+
+x$val
+for(i in 1:10) {
+  cat(x$pp, ' ')
+}
+
+## switch to Hex
+
+x$convert <- list(
+  convert = function(x) Int2Base(x, 16),
+  iconvert = function(x) Base2Int(x, 16)
+)
+
+x$val
+for(i in 1:10) {
+  cat(x$pp, "\n")
+}
+
+
 
 ## tests R6ProgressBar ----
 
@@ -248,6 +309,25 @@ pb5$cycle <- TRUE
 replicate(100, {pb5$pp; Sys.sleep(0.1); pb5$value})
 
 rm(pb5)
+gc()
+
+pb6 <- R6ProgressBar$new(100)
+pb6$convert$convert <- function(x) Int2Base(x, 2)
+pb6$label <- NULL
+
+while(!pb6$finished) {
+  Sys.sleep(0.2)
+  pb6$pp
+}
+
+pb6$convert$convert <- as.roman
+
+while(pb6$value) {
+  Sys.sleep(0.2)
+  pb6$mm
+}
+
+rm(pb6)
 gc()
 
 
