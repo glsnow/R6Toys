@@ -42,4 +42,4 @@ image morph
 synthetic data generation
 nim  https://en.wikipedia.org/wiki/Nim
 9 mens morris   https://en.wikipedia.org/wiki/Nine_men%27s_morris
-
+gnuplot
