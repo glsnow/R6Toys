@@ -14,6 +14,7 @@ export(R6MPuz)
 export(R6PointStack)
 export(R6ProgressBar)
 export(R6Robots)
+export(R6Transcript)
 export(R6TurtleGraphics)
 importFrom(R6,R6Class)
 importFrom(igraph,
